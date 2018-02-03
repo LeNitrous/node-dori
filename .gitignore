@@ -1,0 +1,9 @@
+# Visual Studio Code
+.vscode/
+
+# NodeJS
+node_modules/
+package.json
+
+# Working Files
+test.js
