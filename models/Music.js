@@ -1,3 +1,5 @@
+const utils = require('../utils.js');
+
 class Music {
     constructor(data) {
         this.id = data.musicId;
@@ -13,6 +15,23 @@ class Music {
             this.difficulty = mapDifficulty(data.difficulty)
 
         this.type = typify(data.tag);
+    }
+
+    getChart(diff) {
+        var allowed = ['easy', 'normal', 'hard', 'expert'];
+        if (!allowed.includes(diff) && diff != undefined)
+            throw new Error('Invalid difficulty');
+        if (diff == undefined) {
+            return {
+                Easy: utils.loadChartData(this.id, 'easy', this.region),
+                Normal: utils.loadChartData(this.id, 'normal', this.region),
+                Hard: utils.loadChartData(this.id, 'hard', this.region),
+                Expert: utils.loadChartData(this.id, 'expert', this.region)
+            }
+        }
+        else {
+            return utils.loadChartData(this.id, diff, this.region);
+        };
     }
 };
 

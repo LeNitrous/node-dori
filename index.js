@@ -16,8 +16,8 @@ const serverRegion = [
 class BandoriApi {
     constructor(options = {}) {
         this.region = options.region;
-        this.locale = options.locale;
         this.apiUrl = `https://api.bangdream.ga/v1/${this.region}`;
+        this.constants = Constants;
     }
 
     query(endpoint) {
@@ -40,33 +40,26 @@ class BandoriApi {
             this.query('/card').then(response => {
                 var nameFormat = query.find(str => { return str.match(/[a-zA-z]+[1-4]/g) });
                 var allowAttrs = ['powerful', 'power', 'pure', 'happy', 'cool'];
-                var memberConst = Constants.Characters;
-                for (var prop in memberConst) {
-                    if (memberConst.hasOwnProperty(prop)) {
-                        memberConst[prop] = memberConst[prop].split(' ')
-                            .reverse()
-                            .shift()
-                            .toLowerCase();
-                    };
-                };
+                var allowMemberNames = [];
+                Object.values(this.constants.Characters)
+                    .forEach((elem, index) => {
+                        if (index == 0) return;
+                        allowMemberNames[index] = elem.split(' ').pop().toLowerCase();
+                    });
     
-                var name, rarity, id, attr;
-                if (nameFormat != undefined) {
-                    name = nameFormat.slice(0, -1);
-                    rarity = nameFormat.slice(-1);
-                    id = utils.findProp(name, memberConst);
-                }
-                else {
-                    name = query.filter(str => { !allowAttrs.includes(str) && str.match(/[a-zA-Z]/g) });
-                    id = (name.length != 0) ? utils.findProp(name, memberConst) : undefined;
-                    rarity = (query.find(num => { return num.match(/[1-4]/g) })) ? query.find(num => { return num.match(/[1-4]/g) }) : undefined;
-                }
-                attr = query.filter(str => allowAttrs.includes(str))[0];
+                var rarity, id, attr;
+
+                id = query.filter(str => { return allowMemberNames.includes(str.toLowerCase()) }).shift();
+                rarity = (query.find(num => { return num.match(/[1-4]/g) })) ? 
+                    query.find(num => { return num.match(/[1-4]/g) }) : undefined;
+                attr = query.filter(str => allowAttrs.includes(str.toLowerCase())).shift();
                 attr = (attr == 'power') ? 'powerful' : attr;
+
                 var search = {};
-                if (id) search.characterId = parseInt(id);
+                if (id) search.characterId = allowMemberNames.indexOf(id) + 1;
                 if (rarity) search.rarity = parseInt(rarity);
-                if (attr) search.attr = attr.toLowerCase();
+                if (attr) search.attr = attr;
+
                 if (Object.keys(search).length == 0)
                     reject(new Error('Invalid search terms.'));
                 
@@ -77,12 +70,18 @@ class BandoriApi {
                     });
                 });
 
+                match.sort((a, b) => {
+                    if (a.rarity > b.rarity) return -1;
+                    if (a.rarity < b.rarity) return 1;
+                    return 0;
+                });
+
                 this.query(`/card/${match[0].cardId}`).then(response => {
                     var result = [];
-                    result.push(new Card(response, this.region, this.locale, true));
+                    result.push(new Card(response, this.region, true));
                     match.shift();
                     if (match.length > 0)
-                        match.forEach(card => { result.push(new Card(card, this.region, false, false)) });
+                        match.forEach(card => { result.push(new Card(card, this.region, false)) });
                     resolve(result);
                 }).catch(reject)
             }).catch(reject);

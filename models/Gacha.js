@@ -1,4 +1,4 @@
-const utilget = require('../utils.js');
+const utils = require('../utils.js');
 
 class Gacha {
     constructor(data, region) {
@@ -6,6 +6,7 @@ class Gacha {
         var pick = [];
 
         this.id = data.gachaId;
+        this.region = region;
         this.name = data.gachaName;
         this.resName = data.resourceName;
         this.sequence = data.seq;
@@ -16,28 +17,28 @@ class Gacha {
         this.end = data.closedAt;
         this.period = data.gachaPeriod;
         this.image = `https://res.bangdream.ga/assets-jp/gacha/screen/${data.resourceName}_logo.png`;
-
-        var cards = data.details.filter(o => {
-            return o.pickup == true;
-        });
-        cards.forEach(o => {
-            pick.push(loadCardData(o.situationId, region));
-        });
-        this.pickup = pick;
+        this.details = data.details;
     }
-};
 
-function loadCardData(id, region) {
-    var card = utils.loadData(`https://api.bangdream.ga/v1/${region}/card`).data;
-    var search = { "cardId": id };
+    getState() {
+        return utils.getState(this.start, this.end);
+    }
 
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
+    getDuration() {
+        if (this.getState != 1)
+            return utils.formatTimeLeft(this.end)
+        else
+            return null;
+    }
+
+    getCards() {
+        var cards = [];
+        var pickup = this.details.filter(o => {
+            return o.pickup == true;
+        }).forEach(o => {
+            cards.push(utils.loadCardData(o.situationId, this.region))
         });
-    });
-
-    return new Card(res[0]);
-};
+    }
+}
 
 module.exports = Gacha;

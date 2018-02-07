@@ -1,18 +1,10 @@
 const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
-const Card = require('./Card.js');
-const Music = require('./Music.js');
-const Stamp = require('./Stamp.js');
-
 class GameEvent {
-    constructor(data, region) {
-        var music = [];
-        var chara = [];
-        var rewardchara = [];
-        var rewardstamp, rewards;
-        
+    constructor(data, region) {  
         this.id = data.eventId;
+        this.region = region;
         this.name = data.eventName;
         this.type = data.eventType;
         this.image = `https://res.bangdream.ga/assets-${region}/homebanner_banner_event${data.eventId}.png`
@@ -25,75 +17,61 @@ class GameEvent {
         this.distributionEnd = data.distributionEndAt;
         this.aggregateEnd = data.aggregateEndAt;                        // Event fully closes to players
         this.bgmFileName = data.bgmFileName;
-
-        var attribute = data.detail.attributes[0].attr || data.detail.attributes[0].attribute;
-        this.attr = attribute;
-
-        rewardstamp = data.pointRewards.filter(reward => {
-            return reward.rewardType == 'stamp'
-        });
-        this.stamp = loadStampData(rewardstamp[0].rewardId, region);
-
-        rewards = data.pointRewards.filter(reward => {
-            return reward.rewardType == 'situation'
-        });
-        rewards.forEach(o => {
-            rewardchara.push(loadCardData(o.rewardId, region))
-        });
-        this.rewardCards = rewardchara;
+        this.rewards = data.pointRewards;
+        this.details = data.detail;
+        this.attribute = data.detail.attributes[0].attr || data.detail.attributes[0].attribute;
 
         data.detail.characters.forEach(o => {
             chara.push(Constants.Members[o.characterId]);
         });
         this.characters = chara;
+    }
 
-        this.music = [];
-        if (data.eventType == 'challenge' || data.eventType == 'versus') {
-            data.detail.musics.forEach(o => {
-                music.push(loadMusicData(o.musicId, region));
-            });
-            this.music = music;
-        }
+    getState() {
+        return utils.getState(this.start, this.end);
+    }
+
+    getDuration() {
+        if (this.getState != 1)
+            return utils.formatTimeLeft(this.end)
+        else
+            return null;
+    }
+
+    getStamp() {
+        var rewardStamp = this.rewards.filter(reward => {
+            return reward.rewardType == 'stamp'
+        });
+        return utils.loadStampData(rewardStamp[0].rewardId, this.region);
+    }
+
+    getCards() {
+        var cards = [];
+        var rewardCards = this.rewards.filter(reward => {
+            return reward.rewardType == 'situation'
+        }).forEach(o => {
+            cards.push(utils.loadCardData(o.rewardId, this.region));
+        });
+        return cards;
+    }
+
+    getMusic() {
+        var music = []
+        if (this.eventType != 'challenge' || this.eventType != 'versus')
+            return undefined;
+        this.details.musics.forEach(o => {
+            music.push(utils.loadMusicData(o.musicId, this.region));
+        });
+        return music;
+    }
+
+    getColor() {
+        return Constants.Attributes[this.attribute].color;
+    }
+
+    getIcon() {
+        return Constants.Attributes[this.attribute].icon;
     }
 }
-
-function loadCardData(id, region) {
-    var card = utils.loadData(`https://api.bangdream.ga/v1/${region}/card`).data;
-    var search = { "cardId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
-    });
-
-    return new Card(res[0]);
-};
-
-function loadMusicData(id, region) {
-    var data = utils.getSync(`https://api.bangdream.ga/v1/${region}/music`).data;
-    var search = { "musicId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
-    });
-
-    return new Music(res[0]);
-};
-
-function loadStampData(id, region) {
-    var data = utils.getSync(`https://api.bangdream.ga/v1/${region}/stamp`).data;
-    var search = { "stampId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
-    });
-
-    return new Stamp(res[0]);
-};
 
 module.exports = GameEvent;

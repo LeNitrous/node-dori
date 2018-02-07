@@ -14,7 +14,7 @@ module.exports = {
         12: "Seta Kaoru",
         13: "Kitazawa Hagumi",
         14: "Matsubara Kanon",
-        15: "Michelle Michelle",
+        15: "Michelle",
         16: "Maruyama Aya",
         17: "Hikawa Hina",
         18: "Shirasagi Chisato",
@@ -34,19 +34,19 @@ module.exports = {
         5: "Roselia"
     },
     Attributes: {
-        Powerful: {
+        powerful: {
             color: [255, 39, 79],
             icon: 'http://i.bandori.party/static/img/i_attribute/1.png'
         },
-        Cool: {
+        cool: {
             color: [64, 87, 227],
             icon: 'http://i.bandori.party/static/img/i_attribute/2.png'
         },
-        Pure: {
+        pure: {
             color: [68, 197, 39],
             icon: 'http://i.bandori.party/static/img/i_attribute/3.png'
         },
-        Happy: {
+        happy: {
             color: [255, 132, 0],
             icon: 'http://i.bandori.party/static/img/i_attribute/4.png'
         }

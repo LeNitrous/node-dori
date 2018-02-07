@@ -1,10 +1,10 @@
-const request = require('sync-request');
+const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class Card {
-    constructor(data, region, locale, showSkill) {
-        this.region = region;
+    constructor(data, region, showSkill) {
         this.id = data.cardId;
+        this.region = region;
         this.title = data.title;
         this.character = {
             id: data.characterId,
@@ -24,30 +24,45 @@ class Card {
             trained_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
             trained_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
         }
-        if (data.parameterMap)
-            this.parameters = mapCardParameters(data.parameterMap);
-        if (showSkill)
-            this.skill = mapSkillParameters(this.id, this.region);
-        console.log(showSkill)
-        this.parameterStoryBonus = bonusStoryStats(data.rarity),
-        this.parameterTrainBonus = bonusTrainStats(data.rarity)
-        if (locale) {
-            var locale_data = JSON.parse(request('GET', `https://bandori.party/api/cards/${this.id + 500}/`, {
-                'headers': { 'user-agent': 'node-dori' }
-            }).getBody().toString());
-            this.locale = {
-                id: locale_data.id,
-                name: locale_data.name,
-                attr: locale_data.i_attribute,
-                icon: locale_data.image,
-                icon_trained: locale_data.image_trained,
-                skill_name: locale_data.skill_name,
-                skill_type: locale_data.i_skill_type,
-                skill_details: locale_data.skill_details,
-                side_skill_type: locale_data.i_side_skill_type,
-                side_skill_details: locale_data.side_skill_details
+        this.parameters = mapCardParameters(data.parameterMap);
+        this.parameterStoryBonus = bonusStoryStats(data.rarity);
+        this.parameterTrainBonus = bonusTrainStats(data.rarity);
+    }
+
+    toString() {
+        return `${this.rarity}★ 【${this.title}】 ${this.character.name}`
+    }
+
+    getLocale() {
+        var data = utils.loadData(`https://bandori.party/api/cards/${this.id + 500}/`);
+        return {
+            id: data.id,
+            name: data.name,
+            attr: data.i_attribute,
+            icon: data.image,
+            icon_trained: data.image_trained,
+            skill: {
+                name: data.skill_name,
+                type: data.i_skill_type,
+                details: data.skill_details
+            },
+            side_skill: {
+                type: data.i_side_skill_type,
+                details: data.side_skill_details
             }
         };
+    }
+
+    getSkill() {
+        return mapSkillParameters(this.id, this.region);
+    }
+
+    getColor() {
+        return Constants.Attributes[this.attribute].color;
+    }
+
+    getIcon() {
+        return Constants.Attributes[this.attribute].icon;
     }
 };
 
