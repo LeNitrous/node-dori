@@ -17,6 +17,10 @@ class Music {
         this.type = typify(data.tag);
     }
 
+    toString() {
+        return `${this.band} - ${this.title}`;
+    }
+
     getChart(diff) {
         var allowed = ['easy', 'normal', 'hard', 'expert'];
         if (!allowed.includes(diff) && diff != undefined)

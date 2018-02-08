@@ -11,7 +11,7 @@ function loadData(url) {
 }
 
 function loadCardData(id, region) {
-    var card = loadData(`https://api.bangdream.ga/v1/${region}/card`).data;
+    var data = loadData(`https://api.bangdream.ga/v1/${region}/card`).data;
     var search = { "cardId": id };
 
     var res = data.filter(o => {
@@ -64,38 +64,10 @@ function getState(start, end) {
         return 1;
 }
 
-function formatTimeLeft(date) {
-    let time = new Date(date - new Date()).getTime();
-
-    let d = Math.floor(time / (1000 * 60 * 60 * 24));
-    let h = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    let m = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-    let s = Math.floor((time % (1000 * 60)) / 1000);
-
-    let str = '';
-
-    let d_tag = (d == 1) ? 'day' : 'days';
-    let h_tag = (h == 1) ? 'hour' : 'hours';
-    let m_tag = (m == 1) ? 'minute' : 'minutes';
-    let s_tag = (s == 1) ? 'second' : 'seconds';
-
-    if (d != 0)
-        str = str + `${d} ${d_tag} `;
-    if (h != 0)
-        str = str + `${h} ${h_tag} `;
-    if (m != 0)
-        str = str + `${m} ${m_tag} `;
-    if (s != 0)
-        str = str + `${s} ${s_tag}`;
-
-    return str;
-}
-
 exports.loadData = loadData;
 exports.loadCardData = loadCardData;
 exports.loadMusicData = loadMusicData;
 exports.loadChartData = loadChartData;
 exports.loadStampData = loadStampData;
 
-exports.formatTimeLeft = formatTimeLeft;
 exports.getState = getState;

@@ -5,6 +5,7 @@ const fs = require('fs');
 const Constants = require('./Constants.js');
 
 const Card = require('./models/Card.js');
+const Event = require('./models/Event.js');
 
 const serverRegion = [
     "jp",   // Japan
@@ -86,6 +87,14 @@ class BandoriApi {
                 }).catch(reject)
             }).catch(reject);
         });
+    }
+
+    getCurrentEvent() {
+        return new Promise((resolve, reject) => {
+            this.query('/event').then(response => {
+                resolve(new Event(response, this.region));
+            }).catch(reject);
+        })
     }
 }
 

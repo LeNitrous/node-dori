@@ -21,21 +21,15 @@ class GameEvent {
         this.details = data.detail;
         this.attribute = data.detail.attributes[0].attr || data.detail.attributes[0].attribute;
 
+        var chara = [];
         data.detail.characters.forEach(o => {
-            chara.push(Constants.Members[o.characterId]);
+            chara.push(Constants.Characters[o.characterId]);
         });
         this.characters = chara;
     }
 
     getState() {
         return utils.getState(this.start, this.end);
-    }
-
-    getDuration() {
-        if (this.getState != 1)
-            return utils.formatTimeLeft(this.end)
-        else
-            return null;
     }
 
     getStamp() {
@@ -56,9 +50,9 @@ class GameEvent {
     }
 
     getMusic() {
-        var music = []
-        if (this.eventType != 'challenge' || this.eventType != 'versus')
-            return undefined;
+        var music = [];
+        if (!this.details.musics)
+            return music;
         this.details.musics.forEach(o => {
             music.push(utils.loadMusicData(o.musicId, this.region));
         });
