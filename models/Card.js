@@ -34,7 +34,7 @@ class Card {
     }
 
     getLocale() {
-        var data = utils.loadData(`https://bandori.party/api/cards/${this.id + 500}/`);
+        var data = utils.loadData(`https://bandori.party/api/cards/${this.id + 500}`);
         return {
             id: data.id,
             name: data.name,
