@@ -142,6 +142,7 @@ class BandoriApi {
 
 class ConnectionError extends Error {
     constructor(status, response) {
+        super();
         this.name = "ConnectionError";
         this.message = `Error ${status}:\nServer Replied with ${response}`;
     }
@@ -149,6 +150,7 @@ class ConnectionError extends Error {
 
 class EmptyResponseError extends Error {
     constructor() {
+        super();
         this.name = "EmptyResponseError";
         this.message = "No response was found or response was empty";
     }
@@ -156,6 +158,7 @@ class EmptyResponseError extends Error {
 
 class InvalidParameterError extends Error {
     constructor() {
+        super();
         this.name = "InvalidParameterError";
         this.message = "Invalid parameters recieved";
     }
