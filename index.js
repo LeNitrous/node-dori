@@ -47,7 +47,7 @@ class BandoriApi {
                     resolve(cardArray);
                 })
                 .catch(error => {
-                    throw error;
+                    reject(error);
                 });
         });
     }
@@ -71,17 +71,15 @@ class BandoriApi {
 
                     if (match == undefined)
                         reject(new EmptyResponseError());
-                    else
-                    this.query(`/card/${match.cardId}`)
-                        .then(response => {
-                            resolve(new Card(response, this.region));
-                        })
-                        .catch(error => {
-                            throw error;
-                        });
-                })
-                .catch(error => {
-                    throw error;
+                    else {
+                        this.query(`/card/${match.cardId}`)
+                            .then(response => {
+                                resolve(new Card(response, this.region));
+                            })
+                            .catch(error => {
+                                reject(error);
+                            });
+                    }
                 });
         });
     }
@@ -140,11 +138,8 @@ class BandoriApi {
                             resolve(result);
                         })
                         .catch(error => {
-                            throw error;
+                            reject(error);
                         });
-                })
-                .catch(error => {
-                    throw error;
                 });
         });
     }
@@ -158,7 +153,7 @@ class BandoriApi {
                     resolve(new Event(response, this.region));
                 })
                 .catch(error => {
-                    throw error;
+                    reject(error);
                 });
         });
     }
