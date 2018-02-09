@@ -1,8 +1,9 @@
 const utils = require('../utils.js');
 
 class Music {
-    constructor(data) {
+    constructor(data, region) {
         this.id = data.musicId;
+        this.region = region;
         this.bgm = `https://res.bangdream.ga/assets/sound/` + data.bgmId + '.mp3';
         this.jacket = `https://res.bangdream.ga/assets/musicjacket/` + data.jacketImage + '_jacket.png';
         this.title = data.title;
@@ -24,18 +25,29 @@ class Music {
     getChart(diff) {
         var allowed = ['easy', 'normal', 'hard', 'expert'];
         if (!allowed.includes(diff) && diff != undefined)
-            throw new Error('Invalid difficulty');
+            throw new utils.InvalidParameterError('Invalid difficulty');
+        var loadDiffs;
         if (diff == undefined) {
-            return {
-                Easy: utils.loadChartData(this.id, 'easy', this.region),
-                Normal: utils.loadChartData(this.id, 'normal', this.region),
-                Hard: utils.loadChartData(this.id, 'hard', this.region),
-                Expert: utils.loadChartData(this.id, 'expert', this.region)
-            }
+            loadDiffs = [
+                utils.loadChartData(this.id, 'easy', this.region),
+                utils.loadChartData(this.id, 'normal', this.region),
+                utils.loadChartData(this.id, 'hard', this.region),
+                utils.loadChartData(this.id, 'expert', this.region)
+            ];
         }
         else {
-            return utils.loadChartData(this.id, diff, this.region);
+            loadDiffs = [utils.loadChartData(this.id, diff, this.region)];
         };
+        return new Promise((resolve, reject) => {
+            Promise.all(loadDiffs)
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(error => {
+                    if (error.status == 400) reject(new utils.EmptyResponseError());
+                    reject(error);
+                });
+        });
     }
 };
 

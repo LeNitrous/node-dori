@@ -8,6 +8,10 @@ const Card = require('./models/Card.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
 
+const ConnectionError = utils.ConnectionError;
+const EmptyResponseError = utils.EmptyResponseError;
+const InvalidParameterError = utils.InvalidParameterError;
+
 const serverRegion = [
     "jp",   // Japan
     "tw",   // Taiwan
@@ -60,8 +64,7 @@ class BandoriApi {
                     resolve(new Card(response, this.region));
                 })
                 .catch(error => {
-                    if (error instanceof ConnectionError)
-                        if (error.status == 400) reject(new EmptyResponseError());
+                    if (error.status == 400) reject(new EmptyResponseError());
                     reject(error);
                 });
         });
@@ -150,8 +153,7 @@ class BandoriApi {
                     resolve(new Music(response, this.region));
                 })
                 .catch(error => {
-                    if (error instanceof ConnectionError)
-                        if (error.status == 400) reject(new EmptyResponseError());
+                    if (error.status == 400) reject(new EmptyResponseError());
                     reject(error);
                 });
         });
@@ -167,31 +169,6 @@ class BandoriApi {
                     reject(error);
                 });
         });
-    }
-}
-
-class ConnectionError extends Error {
-    constructor(status, response) {
-        super();
-        this.name = "ConnectionError";
-        this.status = status;
-        this.message = `Error ${status}: Server Replied with ${response}`;
-    }
-}
-
-class EmptyResponseError extends Error {
-    constructor() {
-        super();
-        this.name = "EmptyResponseError";
-        this.message = "No response was found or response was empty";
-    }
-}
-
-class InvalidParameterError extends Error {
-    constructor() {
-        super();
-        this.name = "InvalidParameterError";
-        this.message = "Invalid parameters recieved";
     }
 }
 

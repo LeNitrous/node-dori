@@ -1,57 +1,101 @@
-const request = require('sync-request');
+const request = require('superagent');
 
 const Card = require('./models/Card.js');
 const Music = require('./models/Music.js');
 const Stamp = require('./models/Stamp.js');
 const Chart = require('./models/Chart.js');
 
+class ConnectionError extends Error {
+    constructor(status, response) {
+        super();
+        this.name = "ConnectionError";
+        this.status = status;
+        this.message = `Error ${status}: Server Replied with ${response}`;
+    }
+}
+
+class EmptyResponseError extends Error {
+    constructor() {
+        super();
+        this.name = "EmptyResponseError";
+        this.message = "No response was found or response was empty";
+    }
+}
+
+class InvalidParameterError extends Error {
+    constructor() {
+        super();
+        this.name = "InvalidParameterError";
+        this.message = "Invalid parameters recieved";
+    }
+}
 
 function loadData(url) {
-    return JSON.parse(request('GET', url).getBody().toString());
+    return new Promise((resolve, reject) => {
+        request.get(url)
+            .set('User-Agent', 'node-dori')
+            .end((error, response) => {
+                if (!error && response.status === 200)
+                    resolve(response.body);
+                else
+                    reject(new ConnectionError(error.status, error.response));
+            });
+    });
 }
 
 function loadCardData(id, region) {
-    var data = loadData(`https://api.bangdream.ga/v1/${region}/card`).data;
-    var search = { "cardId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/card/${id}`)
+            .then(response => {
+                resolve(new Card(response, region));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
     });
-
-    return new Card(res[0]);
 }
 
 function loadMusicData(id, region) {
-    var data = loadData(`https://api.bangdream.ga/v1/${region}/music`).data;
-    var search = { "musicId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/music/${id}`)
+            .then(response => {
+                resolve(new Music(response, this.region));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
     });
-
-    return new Music(res[0]);
-}
-
-function loadStampData(id, region) {
-    var data = module.exports.loadData(`https://api.bangdream.ga/v1/${region}/stamp`).data;
-    var search = { "stampId": id };
-
-    var res = data.filter(o => {
-        return Object.keys(search).every(k => {
-            return o[k] == search[k];
-        });
-    });
-
-    return new Stamp(res[0]);
 }
 
 function loadChartData(id, diff, region) {
-    var data = module.exports.loadData(`https://api.bangdream.ga/v1/${region}/music/chart/${id}/${diff}`);
-    return new Chart(data);
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/music/chart/${id}/${diff}`)
+            .then(response => {
+                resolve(new Chart(response, diff));
+            })
+            .catch(error => {
+                if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
+function loadStampData(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/stamp/${id}`)
+            .then(response => {
+                resolve(new Stamp(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
 }
 
 function getState(start, end) {
@@ -64,10 +108,11 @@ function getState(start, end) {
         return 1;
 }
 
-exports.loadData = loadData;
-exports.loadCardData = loadCardData;
-exports.loadMusicData = loadMusicData;
-exports.loadChartData = loadChartData;
-exports.loadStampData = loadStampData;
-
-exports.getState = getState;
+module.exports.ConnectionError =  ConnectionError;
+module.exports.EmptyResponseError =  EmptyResponseError;
+module.exports.InvalidParameterError =  InvalidParameterError;
+module.exports.loadData =  loadData;
+module.exports.loadCardData =  loadCardData;
+module.exports.loadChartData =  loadChartData;
+module.exports.loadMusicData =  loadMusicData;
+module.exports.loadStampData =  loadStampData;

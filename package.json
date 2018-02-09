@@ -1,0 +1,26 @@
+{
+  "name": "node-dori",
+  "version": "0.0.1",
+  "description": "BanG Dream! data viewer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bang",
+    "dream",
+    "girls",
+    "band",
+    "party"
+  ],
+  "author": "Nitrous",
+  "license": "MIT",
+  "dependencies": {
+    "cron": "^1.3.0",
+    "superagent": "^3.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LeNitrous/node-dori.git"
+  }
+}

@@ -37,6 +37,16 @@ class Gacha {
             return o.pickup == true;
         }).forEach(o => {
             cards.push(utils.loadCardData(o.situationId, this.region))
+        })
+        return new Promise((resolve, reject) => {
+            Promise.all(cards)
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(error => {
+                    if (error.status == 400) reject(new utils.EmptyResponseError());
+                    reject(error);
+                });
         });
     }
 }

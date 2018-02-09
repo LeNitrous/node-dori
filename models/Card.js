@@ -24,8 +24,12 @@ class Card {
             trained_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
             trained_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
         }
-        if (data.parameterMap)
-            this.parameters = mapCardParameters(data.parameterMap);
+        this.parameterMax = {
+            performance: data.maxPerformance,
+            technique: data.maxTechnique,
+            visual: data.maxVisual,
+            total: data.totalMaxParam
+        }
         this.parameterStoryBonus = bonusStoryStats(data.rarity);
         this.parameterTrainBonus = bonusTrainStats(data.rarity);
     }
@@ -35,27 +39,41 @@ class Card {
     }
 
     getLocale() {
-        var data = utils.loadData(`https://bandori.party/api/cards/${this.id + 500}`);
-        return {
-            id: data.id,
-            name: data.name,
-            attr: data.i_attribute,
-            icon: data.image,
-            icon_trained: data.image_trained,
-            skill: {
-                name: data.skill_name,
-                type: data.i_skill_type,
-                details: data.skill_details
-            },
-            side_skill: {
-                type: data.i_side_skill_type,
-                details: data.side_skill_details
-            }
-        };
+        return new Promise((resolve, reject) => {
+            utils.loadData(`https://bandori.party/api/cards/${this.id + 500}`)
+                .then(response => {
+                    resolve({
+                        id: response.id,
+                        name: response.name,
+                        attribute: response.i_attribute,
+                        icon: {
+                            normal: response.image,
+                            trained: response.image_trained
+                        },
+                        skill: {
+                            name: response.skill_name,
+                            type: response.i_skill_type,
+                            details: dresponseskill_details
+                        },
+                        side_skill: {
+                            type: response.i_side_skill_type,
+                            details: response.side_skill_details
+                        }
+                    });
+                })
+                .catch(error => {
+                    if (error.status == 400) reject(new utils.EmptyResponseError());
+                    reject(error);
+                });
+        });
     }
 
     getSkill() {
         return mapSkillParameters(this.id, this.region);
+    }
+
+    getParameters() {
+        return mapCardParameters(data.parameterMap);
     }
 
     getColor() {
@@ -124,14 +142,20 @@ function mapSkillParameters(cardId, region) {
         }
         return SKILL_MAP;
     };
-    var data = JSON.parse(request('GET', `https://api.bangdream.ga/v1/${region}/skill/cardId/${cardId}`, {
-            'headers': { 'user-agent': 'node-dori' }
-        }).getBody().toString());
-    return {
-        id: data.skillId,
-        name: data.skillName,
-        details: mapSkillDetail(data.skillDetail)
-    };
+    return new Promise((resolve, reject) => {
+        utils.loadData(`https://api.bangdream.ga/v1/${region}/skill/cardId/${cardId}`)
+            .then(response => {
+                resolve({
+                    id: response.skillId,
+                    name: response.skillName,
+                    details: mapSkillDetail(response.skillDetail)
+                });
+            })
+            .catch(error => {
+                if (error.status == 400) reject(new utils.EmptyResponseError());
+                reject(error);
+            });
+    });
 };
 
 String.prototype.format = function() {
