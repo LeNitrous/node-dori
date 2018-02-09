@@ -54,34 +54,13 @@ class BandoriApi {
 
     getCardByID(id) {
         return new Promise((resolve, reject) => {
-            this.query('/card')
+            this.query(`/card/${id}`)
                 .then(response => {
-                    var search = {
-                        cardId: parseInt(id)
-                    };
-
-                    if (Object.keys(search).length == 0)
-                        reject(new InvalidParameterError());
-                    
-                    var match = response.data.filter(o => {
-                        return Object.keys(search).every(k => {
-                            return o[k] === search[k];
-                        });
-                    }).shift();
-
-                    if (match == undefined)
-                        reject(new EmptyResponseError());
-                    else {
-                        this.query(`/card/${match.cardId}`)
-                            .then(response => {
-                                resolve(new Card(response, this.region));
-                            })
-                            .catch(error => {
-                                reject(error);
-                            });
-                    }
+                    resolve(new Card(response, this.region));
                 })
                 .catch(error => {
+                    if (error instanceof ConnectionError)
+                        if (error.status == 400) reject(new EmptyResponseError());
                     reject(error);
                 });
         });
@@ -151,8 +130,6 @@ class BandoriApi {
         return new Promise((resolve, reject) => {
             this.query('/event')
                 .then(response => {
-                    if (!response)
-                        reject(new EmptyResponseError())
                     resolve(new Event(response, this.region));
                 })
                 .catch(error => {
@@ -166,7 +143,8 @@ class ConnectionError extends Error {
     constructor(status, response) {
         super();
         this.name = "ConnectionError";
-        this.message = `Error ${status}:\nServer Replied with ${response}`;
+        this.status = status;
+        this.message = `Error ${status}: Server Replied with ${response}`;
     }
 }
 
