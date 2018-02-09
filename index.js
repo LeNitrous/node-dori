@@ -57,7 +57,7 @@ class BandoriApi {
             this.query('/card')
                 .then(response => {
                     var search = {
-                        cardId: id
+                        cardId: parseInt(id)
                     };
 
                     if (Object.keys(search).length == 0)
@@ -68,6 +68,8 @@ class BandoriApi {
                             return o[k] === search[k];
                         });
                     }).shift();
+
+                    console.log(match);
 
                     if (match == undefined)
                         reject(new EmptyResponseError());
@@ -80,6 +82,9 @@ class BandoriApi {
                                 reject(error);
                             });
                     }
+                })
+                .catch(error => {
+                    reject(error);
                 });
         });
     }
