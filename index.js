@@ -31,7 +31,7 @@ class BandoriApi {
                     if (!error && response.status === 200)
                         resolve(response.body);
                     else
-                        reject(new Error(error.status || error.response));
+                        reject(new ConnectionError(error.status, error.response));
                 });
         });
     }
@@ -56,7 +56,7 @@ class BandoriApi {
                 };
 
                 if (Object.keys(search).length == 0)
-                    reject(new Error('Invalid search terms.'));
+                    reject(new InvalidParameterError());
                 
                 var match = response.data.filter(o => {
                     return Object.keys(search).every(k => {
@@ -65,7 +65,7 @@ class BandoriApi {
                 }).shift();
 
                 if (match == undefined)
-                    reject(new Error('Found no card.'));
+                    reject(new EmptyResponseError());
 
                 this.query(`/card/${match.cardId}`).then(response => {
                     resolve(new Card(response, this.region));
@@ -103,7 +103,7 @@ class BandoriApi {
                     search.attr = attr;
 
                 if (Object.keys(search).length == 0)
-                    reject(new Error('Invalid search terms.'));
+                    reject(new InvalidParameterError());
 
                 var match = response.data.filter(o => {
                     return Object.keys(search).every(k => {
@@ -132,9 +132,32 @@ class BandoriApi {
     getCurrentEvent() {
         return new Promise((resolve, reject) => {
             this.query('/event').then(response => {
+                if (!response)
+                    reject(new EmptyResponseError())
                 resolve(new Event(response, this.region));
             }).catch(reject);
         })
+    }
+}
+
+class ConnectionError extends Error {
+    constructor(status, response) {
+        this.name = "ConnectionError";
+        this.message = `Error ${status}:\nServer Replied with ${response}`;
+    }
+}
+
+class EmptyResponseError extends Error {
+    constructor() {
+        this.name = "EmptyResponseError";
+        this.message = "No response was found or response was empty";
+    }
+}
+
+class InvalidParameterError extends Error {
+    constructor() {
+        this.name = "InvalidParameterError";
+        this.message = "Invalid parameters recieved";
     }
 }
 
