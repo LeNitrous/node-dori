@@ -5,6 +5,7 @@ const fs = require('fs');
 const Constants = require('./Constants.js');
 
 const Card = require('./models/Card.js');
+const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
 
 const serverRegion = [
@@ -122,6 +123,36 @@ class BandoriApi {
                         .catch(error => {
                             reject(error);
                         });
+                });
+        });
+    }
+
+    getMusic() {
+        return new Promise((resolve, reject) => {
+            this.query('/music')
+                .then(response => {
+                    var musicArray = [];
+                    response.data.forEach(elem => {
+                        musicArray.push(new Music(elem, this.region))
+                    });
+                    resolve(musicArray);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+        });
+    }
+
+    getMusicByID(id) {
+        return new Promise((resolve, reject) => {
+            this.query(`/music/${id}`)
+                .then(response => {
+                    resolve(new Music(response, this.region));
+                })
+                .catch(error => {
+                    if (error instanceof ConnectionError)
+                        if (error.status == 400) reject(new EmptyResponseError());
+                    reject(error);
                 });
         });
     }
