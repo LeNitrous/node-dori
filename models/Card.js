@@ -2,7 +2,7 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class Card {
-    constructor(data, region, showSkill) {
+    constructor(data, region) {
         this.id = data.cardId;
         this.region = region;
         this.title = data.title;
@@ -24,7 +24,8 @@ class Card {
             trained_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
             trained_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
         }
-        this.parameters = mapCardParameters(data.parameterMap);
+        if (data.parameterMap)
+            this.parameters = mapCardParameters(data.parameterMap);
         this.parameterStoryBonus = bonusStoryStats(data.rarity);
         this.parameterTrainBonus = bonusTrainStats(data.rarity);
     }

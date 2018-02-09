@@ -36,7 +36,45 @@ class BandoriApi {
         });
     }
 
-    getCard(query) {
+    getCards() {
+        return new Promise((resolve, reject) => {
+            this.query('/card').then(response => {
+                var cardArray = [];
+                response.data.forEach(elem => {
+                    cardArray.push(new Card(elem, this.region))
+                });
+                resolve(cardArray);
+            }).catch(reject);
+        }).catch(reject);
+    }
+
+    getCardByID(id) {
+        return new Promise((resolve, reject) => {
+            this.query('/card').then(response => {
+                var search = {
+                    cardId: id
+                };
+
+                if (Object.keys(search).length == 0)
+                    reject(new Error('Invalid search terms.'));
+                
+                var match = response.data.filter(o => {
+                    return Object.keys(search).every(k => {
+                        return o[k] === search[k];
+                    });
+                }).shift();
+
+                if (match == undefined)
+                    reject(new Error('Found no card.'));
+
+                this.query(`/card/${match.cardId}`).then(response => {
+                    resolve(new Card(response, this.region));
+                }).catch(reject);
+            }).catch(reject);
+        })
+    }
+
+    getCardByQuery(query) {
         return new Promise((resolve, reject) => {
             this.query('/card').then(response => {
                 var nameFormat = query.find(str => { return str.match(/[a-zA-z]+[1-4]/g) });
@@ -57,15 +95,17 @@ class BandoriApi {
                 attr = (attr == 'power') ? 'powerful' : attr;
 
                 var search = {};
-                if (id) search.characterId = allowMemberNames.indexOf(id) + 1;
-                if (rarity) search.rarity = parseInt(rarity);
-                if (attr) search.attr = attr;
+                if (id)
+                    search.characterId = allowMemberNames.indexOf(id) + 1;
+                if (rarity)
+                    search.rarity = parseInt(rarity);
+                if (attr)
+                    search.attr = attr;
 
                 if (Object.keys(search).length == 0)
                     reject(new Error('Invalid search terms.'));
-                
-                var data = response.data.reverse();
-                var match = data.filter(o => {
+
+                var match = response.data.filter(o => {
                     return Object.keys(search).every(k => {
                         return o[k] === search[k];
                     });
@@ -79,10 +119,10 @@ class BandoriApi {
 
                 this.query(`/card/${match[0].cardId}`).then(response => {
                     var result = [];
-                    result.push(new Card(response, this.region, true));
+                    result.push(new Card(response, this.region));
                     match.shift();
                     if (match.length > 0)
-                        match.forEach(card => { result.push(new Card(card, this.region, false)) });
+                        match.forEach(card => { result.push(new Card(card, this.region)) });
                     resolve(result);
                 }).catch(reject)
             }).catch(reject);
