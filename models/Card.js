@@ -53,7 +53,7 @@ class Card {
                         skill: {
                             name: response.skill_name,
                             type: response.i_skill_type,
-                            details: dresponseskill_details
+                            details: response.skill_details
                         },
                         side_skill: {
                             type: response.i_side_skill_type,
