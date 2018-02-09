@@ -114,18 +114,12 @@ class BandoriApi {
                         return 0;
                     });
 
-                    this.query(`/card/${match[0].cardId}`)
-                        .then(response => {
-                            var result = [];
-                            result.push(new Card(response, this.region));
-                            match.shift();
-                            if (match.length > 0)
-                                match.forEach(card => { result.push(new Card(card, this.region)) });
-                            resolve(result);
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
+                    var result = [];
+                    match.forEach(card => {
+                        result.push(new Card(response, this.region));
+                    });
+                    
+                    resolve(result);
                 });
         });
     }
