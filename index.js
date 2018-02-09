@@ -69,8 +69,6 @@ class BandoriApi {
                         });
                     }).shift();
 
-                    console.log(match);
-
                     if (match == undefined)
                         reject(new EmptyResponseError());
                     else {
