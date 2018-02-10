@@ -116,3 +116,4 @@ module.exports.loadCardData =  loadCardData;
 module.exports.loadChartData =  loadChartData;
 module.exports.loadMusicData =  loadMusicData;
 module.exports.loadStampData =  loadStampData;
+module.exports.getState = getState;
