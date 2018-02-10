@@ -116,7 +116,7 @@ class BandoriApi {
 
                     var result = [];
                     match.forEach(card => {
-                        result.push(new Card(response, this.region));
+                        result.push(new Card(card, this.region));
                     });
                     
                     resolve(result);
