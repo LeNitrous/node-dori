@@ -10,7 +10,7 @@ class ConnectionError extends Error {
         super();
         this.name = "ConnectionError";
         this.status = status;
-        this.message = `Error ${status}: Server Replied with ${response}`;
+        this.message = `(${status}) Server Replied with ${response.body}`;
     }
 }
 
