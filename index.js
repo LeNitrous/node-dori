@@ -61,6 +61,7 @@ class BandoriApi {
         return new Promise((resolve, reject) => {
             this.query(`/card/${id}`)
                 .then(response => {
+                    if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Card(response, this.region));
                 })
                 .catch(error => {
@@ -144,6 +145,7 @@ class BandoriApi {
         return new Promise((resolve, reject) => {
             this.query(`/music/${id}`)
                 .then(response => {
+                    if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Music(response, this.region));
                 })
                 .catch(error => {
