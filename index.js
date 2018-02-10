@@ -80,7 +80,6 @@ class BandoriApi {
                     var allowMemberNames = [];
                     Object.values(this.constants.Characters)
                         .forEach((elem, index) => {
-                            if (index == 0) return;
                             allowMemberNames[index] = elem.split(' ').pop().toLowerCase();
                         });
         
