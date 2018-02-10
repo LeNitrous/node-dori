@@ -103,6 +103,10 @@ class BandoriApi {
                     if (Object.keys(search).length == 0)
                         reject(new InvalidParameterError());
 
+                    response.data = response.data.filter(o => {
+                        return o.title !== "ガルパ杯";
+                    });
+                        
                     var match = response.data.filter(o => {
                         return Object.keys(search).every(k => {
                             return o[k] === search[k];
