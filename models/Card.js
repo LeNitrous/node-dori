@@ -30,6 +30,10 @@ class Card {
             visual: data.maxVisual,
             total: data.totalMaxParam
         }
+        if (data.parameterMap)
+            this.parameters = mapCardParameters(data.parameterMap);
+        if (data.episodes)
+            this.episodes = mapCardEpisodes(data.episodes);
         this.parameterStoryBonus = bonusStoryStats(data.rarity);
         this.parameterTrainBonus = bonusTrainStats(data.rarity);
     }
@@ -83,20 +87,16 @@ class Card {
         );
     }
 
-    getParameters() {
+    // TODO: be more descriptive (lol)
+    // also just request this if you didn't get it from getCardByID()
+    getDetails() {
         return new Promise((resolve, reject) =>
             utils.loadCardData(this.id, this.region)
                 .then(response => {
-                    resolve(mapCardParameters(response.parameterMap));
-                })
-        )
-    }
-
-    getEpisodes() {
-        return new Promise((resolve, reject) =>
-            utils.loadCardData(this.id, this.region)
-                .then(response => {
-                    resolve(mapCardEpisodes(response.episodes));
+                    resolve({
+                        parameters: mapCardParameters(response.parameterMap),
+                        episodes: mapCardEpisodes(response.episodes)
+                    });
                 })
         )
     }
