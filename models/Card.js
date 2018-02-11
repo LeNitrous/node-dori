@@ -86,9 +86,7 @@ class Card {
                 })
         );
     }
-
-    // TODO: be more descriptive (lol)
-    // also just request this if you didn't get it from getCardByID()
+    
     getDetails() {
         return new Promise((resolve, reject) =>
             utils.loadCardData(this.id, this.region)
