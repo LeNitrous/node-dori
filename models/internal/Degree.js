@@ -9,3 +9,5 @@ class Degree {
         this.icon_name = data.iconImageName;
     }
 }
+
+module.exports = Degree;

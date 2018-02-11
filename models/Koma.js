@@ -6,3 +6,5 @@ class Koma {
         this.assetBundleName = data.assetBundleName;
     }
 }
+
+module.exports = Koma;

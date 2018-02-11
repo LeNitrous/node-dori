@@ -84,7 +84,21 @@ class Card {
     }
 
     getParameters() {
-        return mapCardParameters(data.parameterMap);
+        return new Promise((resolve, reject) =>
+            utils.loadCardData(this.id, this.region)
+                .then(response => {
+                    resolve(mapCardParameters(response.parameterMap));
+                })
+        )
+    }
+
+    getEpisodes() {
+        return new Promise((resolve, reject) =>
+            utils.loadCardData(this.id, this.region)
+                .then(response => {
+                    resolve(mapCardEpisodes(response.episodes));
+                })
+        )
     }
 
     getColor() {
@@ -144,14 +158,15 @@ function mapCardParameters(parameterMap) {
     return PARAM_MAP;
 };
 
-String.prototype.format = function() {
-    var s = this,
-        i = arguments.length;
-
-    while (i--) {
-        s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-    }
-    return s;
-};
+function mapCardEpisodes(episodes) {
+    var EPISODE_MAP = [];
+    episodes.entries.forEach(episode => {
+        EPISODE_MAP.push({
+            id: episode.episodeId,
+            type: episode.episodeType,
+            scenario: episode.scenarioId
+        });
+    })
+}
 
 module.exports = Card;

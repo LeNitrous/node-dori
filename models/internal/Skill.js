@@ -14,3 +14,5 @@ function mapSkillDetail(skillDetail) {
     }
     return SKILL_MAP;
 };
+
+module.exports = Skill;
