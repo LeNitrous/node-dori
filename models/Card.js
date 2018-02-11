@@ -39,37 +39,48 @@ class Card {
     }
 
     getLocale() {
-        return new Promise((resolve, reject) => {
-            utils.loadData(`https://bandori.party/api/cards/${this.id + 500}`)
+        return new Promise((resolve, reject) => 
+            utils.loadLocaleCardData(this.id)
                 .then(response => {
-                    resolve({
-                        id: response.id,
-                        name: response.name,
-                        attribute: response.i_attribute,
-                        icon: {
-                            normal: response.image,
-                            trained: response.image_trained
-                        },
-                        skill: {
-                            name: response.skill_name,
-                            type: response.i_skill_type,
-                            details: response.skill_details
-                        },
-                        side_skill: {
-                            type: response.i_side_skill_type,
-                            details: response.side_skill_details
-                        }
-                    });
+                    resolve(response);
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new utils.EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
+    }
+
+    getCharacter() {
+        return new Promise((resolve, reject) => 
+            utils.loadCharaData(this.character.id, this.region)
+                .then(response => {
+                    resolve(response);
+                })
+        )
+    }
+    
+    getCharacterLocale() {
+        return new Promise((resolve, reject) => 
+            utils.loadLocaleCharaData(this.character.id)
+                .then(response => {
+                    resolve(response);
+                })
+        );        
+    }
+
+    getBand() {
+        return new Promise((resolve, reject) => 
+            utils.loadBandData(this.band, this.region)
+                .then(response => {
+                    resolve(response);
+                })
+        )
     }
 
     getSkill() {
-        return mapSkillParameters(this.id, this.region);
+        return new Promise((resolve, reject) => 
+            utils.loadCardSkillData(this.id, this.region)
+                .then(response => {
+                    resolve(response);
+                })
+        );
     }
 
     getParameters() {
@@ -131,31 +142,6 @@ function mapCardParameters(parameterMap) {
         };
     };
     return PARAM_MAP;
-};
-
-function mapSkillParameters(cardId, region) {
-    function mapSkillDetail(skillDetail) {
-        var SKILL_MAP = [];
-        for (var k in skillDetail) {
-            var SKILL = skillDetail[k];
-            SKILL_MAP[SKILL.skillLevel] = SKILL.simpleDescription;
-        }
-        return SKILL_MAP;
-    };
-    return new Promise((resolve, reject) => {
-        utils.loadData(`https://api.bangdream.ga/v1/${region}/skill/cardId/${cardId}`)
-            .then(response => {
-                resolve({
-                    id: response.skillId,
-                    name: response.skillName,
-                    details: mapSkillDetail(response.skillDetail)
-                });
-            })
-            .catch(error => {
-                if (error.status == 400) reject(new utils.EmptyResponseError());
-                reject(error);
-            });
-    });
 };
 
 String.prototype.format = function() {

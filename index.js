@@ -4,9 +4,12 @@ const cron = require('cron');
 const fs = require('fs');
 const Constants = require('./Constants.js');
 
+const Band = require('./models/Band.js')
+const Koma = require('./models/Koma.js');
 const Card = require('./models/Card.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
+const Character = require('./models/Character.js');
 
 const ConnectionError = utils.ConnectionError;
 const EmptyResponseError = utils.EmptyResponseError;
@@ -42,7 +45,7 @@ class BandoriApi {
     }
 
     getCards() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query('/card')
                 .then(response => {
                     var cardArray = [];
@@ -51,28 +54,21 @@ class BandoriApi {
                     });
                     resolve(cardArray);
                 })
-                .catch(error => {
-                    reject(error);
-                });
-        });
+        );
     }
 
     getCardByID(id) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query(`/card/${id}`)
                 .then(response => {
                     if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Card(response, this.region));
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
     }
 
     getCardByQuery(query) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query('/card')
                 .then(response => {
                     var nameFormat = query.find(str => { return str.match(/[a-zA-z]+[1-4]/g) });
@@ -124,12 +120,12 @@ class BandoriApi {
                     });
                     
                     resolve(result);
-                });
-        });
+                })
+        );
     }
 
     getMusic() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query('/music')
                 .then(response => {
                     var musicArray = [];
@@ -138,36 +134,82 @@ class BandoriApi {
                     });
                     resolve(musicArray);
                 })
-                .catch(error => {
-                    reject(error);
-                });
-        });
+        );
     }
 
     getMusicByID(id) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query(`/music/${id}`)
                 .then(response => {
                     if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Music(response, this.region));
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
     }
 
     getCurrentEvent() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) =>
             this.query('/event')
                 .then(response => {
                     resolve(new Event(response, this.region));
                 })
-                .catch(error => {
-                    reject(error);
-                });
-        });
+        );
+    }
+
+    getKomas() {
+        return new Promise((resolve, reject) => 
+            this.query('/sfc')
+                .then(response => {
+                    var komaArray = [];
+                    response.data.forEach(data => {
+                        komaArray.push(new Koma(data, region));
+                    });
+                    resolve(komaArray);
+                })
+        )
+    }
+
+    getKomaByID(id) {
+        return new Promise((resolve, reject) => 
+            this.query('/sfc')
+                .then(response => {
+                    var search = { singleFrameCartoonId: id };
+                    var match = response.data.filter(o => {
+                    return Object.keys(search).every(k => {
+                        return o[k] === search[k];
+                        });
+                    });
+                    resolve(new Koma(match));
+                })
+        )
+    }
+
+    getBands() {
+        return new Promise((resolve, reject) => 
+            this.query('/band')
+                .then(response => {
+                    var bandArray = [];
+                    response.forEach(data => {
+                        bandArray.push(new Band(data, region));
+                    });
+                    resolve(bandArray);
+                })
+        )
+    }
+
+    getBandByID(id) {
+        return new Promise((resolve, reject) => 
+            this.query('/band')
+                .then(response => {
+                    var search = { bandId: id };
+                    var match = response.filter(o => {
+                    return Object.keys(search).every(k => {
+                        return o[k] === search[k];
+                        });
+                    });
+                    resolve(new Band(match));
+                })
+        )
     }
 }
 

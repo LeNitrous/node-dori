@@ -38,16 +38,12 @@ class Music {
         else {
             loadDiffs = [utils.loadChartData(this.id, diff, this.region)];
         };
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => 
             Promise.all(loadDiffs)
                 .then(response => {
                     resolve(response);
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new utils.EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
     }
 };
 

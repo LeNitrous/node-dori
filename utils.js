@@ -1,9 +1,20 @@
 const request = require('superagent');
 
 const Card = require('./models/Card.js');
+const Band = require('./models/Band.js');
+const Koma = require('./models/Koma.js');
 const Music = require('./models/Music.js');
-const Stamp = require('./models/Stamp.js');
-const Chart = require('./models/Chart.js');
+const Character = require('./models/Character.js');
+
+const Stamp = require('./models/internal/Stamp.js');
+const Chart = require('./models/internal/Chart.js');
+const Skill = require('./models/internal/Skill.js');
+const Degree = require('./models/internal/Degree.js');
+const Live2DModel = require('./models/internal/Live2DModel');
+const Live2DAction = require('./models/internal/Live2DAction');
+const Live2DCostume = require('./models/internal/Live2DCostume');
+const LocaleCard = require('./models/internal/Card.js');
+const LocaleCharacter = require('./models/internal/Character.js');
 
 class ConnectionError extends Error {
     constructor(status, response) {
@@ -99,6 +110,120 @@ function loadStampData(id, region) {
     });
 }
 
+function loadCharaData(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://bandori.party/api/cards/${this.id + 500}`)
+            .then(response => {
+                resolve(new LocaleCard(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
+function loadBandData(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/band`)
+            .then(response => {
+                var search = { bandId: id };
+                var match = response.filter(o => {
+                    return Object.keys(search).every(k => {
+                        return o[k] === search[k];
+                    });
+                });
+                resolve(new Band(match));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
+function loadCardSkillData(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/skill/cardId/${id}`)
+            .then(response => {
+                resolve(new Skill(response, region));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
+function loadLive2DCharacterInfo(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
+            .then(response => {
+                var live2d = {
+                    actions: [],
+                    costumes: []
+                };
+                response.voices.forEach(voice => {
+                    live2d.actions.push(new Live2DAction(voice));
+                });
+                response.costums.forEach(costume => {
+                    live2d.costumes.push(new Live2DCostume(costume));
+                });
+                resolve(live2d);
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });    
+}
+
+function loadLive2DModelData(id, region) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
+            .then(response => {
+                resolve(new Live2DModel(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });       
+}
+
+function loadLocaleCardData(id) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://bandori.party/api/members/${id + 5}`)
+            .then(response => {
+                resolve(new LocaleCharacter(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
+function loadLocaleCharaData(id) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://bandori.party/api/members/${id + 5}`)
+            .then(response => {
+                resolve(new LocaleCharacter(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
 function getState(start, end) {
     var now = new Date();
     if (now < start && now < end)
@@ -109,12 +234,18 @@ function getState(start, end) {
         return 1;
 }
 
-module.exports.ConnectionError =  ConnectionError;
-module.exports.EmptyResponseError =  EmptyResponseError;
-module.exports.InvalidParameterError =  InvalidParameterError;
-module.exports.loadData =  loadData;
-module.exports.loadCardData =  loadCardData;
-module.exports.loadChartData =  loadChartData;
-module.exports.loadMusicData =  loadMusicData;
-module.exports.loadStampData =  loadStampData;
+module.exports.ConnectionError = ConnectionError;
+module.exports.EmptyResponseError = EmptyResponseError;
+module.exports.InvalidParameterError = InvalidParameterError;
+module.exports.loadData = loadData;
+module.exports.loadCardData = loadCardData;
+module.exports.loadBandData = loadBandData;
+module.exports.loadChartData = loadChartData;
+module.exports.loadMusicData = loadMusicData;
+module.exports.loadStampData = loadStampData;
+module.exports.loadCharaData = loadCharaData;
+module.exports.loadLive2DModelData = loadLive2DModelData;
+module.exports.loadLive2DCharacterInfo = loadLive2DCharacterInfo;
+module.exports.loadLocaleCardData = loadLocaleCardData;
+module.exports.loadLocaleCharaData = loadLocaleCharaData;
 module.exports.getState = getState;

@@ -36,16 +36,12 @@ class GameEvent {
         var rewardStamp = this.rewards.filter(reward => {
             return reward.rewardType == 'stamp'
         });
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => 
             utils.loadStampData(rewardStamp[0].rewardId, this.region)
                 .then(response => {
                     resolve(response)
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new utils.EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
     }
 
     getCards() {
@@ -55,16 +51,12 @@ class GameEvent {
         }).forEach(o => {
             cards.push(utils.loadCardData(o.rewardId, this.region));
         });
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => 
             Promise.all(cards)
                 .then(response => {
                     resolve(response);
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new utils.EmptyResponseError());
-                    reject(error);
-                });
-        });
+        );
     }
 
     getMusic() {
@@ -74,16 +66,12 @@ class GameEvent {
         this.details.musics.forEach(o => {
             music.push(utils.loadMusicData(o.musicId, this.region));
         });
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => 
             Promise.all(music)
                 .then(response => {
                     resolve(response);
                 })
-                .catch(error => {
-                    if (error.status == 400) reject(new utils.EmptyResponseError());
-                    reject(error);
-                });
-        })
+        )
     }
 
     getColor() {
