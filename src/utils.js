@@ -1,4 +1,5 @@
 const request = require('superagent');
+const settings = require('./settings.json');
 
 const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
@@ -13,8 +14,9 @@ const Degree = require('./models/internal/Degree.js');
 const Live2DModel = require('./models/internal/Live2DModel');
 const Live2DAction = require('./models/internal/Live2DAction');
 const Live2DCostume = require('./models/internal/Live2DCostume');
-const LocaleCard = require('./models/internal/Card.js');
-const LocaleCharacter = require('./models/internal/Character.js');
+const LocaleCard = require('./models/internal/LocaleCard.js');
+const LocaleEvent = require('./models/internal/LocaleEvent.js');
+const LocaleCharacter = require('./models/internal/LocaleCharacter.js');
 
 class ConnectionError extends Error {
     constructor(status, response) {
@@ -224,6 +226,20 @@ function loadLocaleCharaData(id) {
     });
 }
 
+function loadLocaleEventData(id) {
+    return new Promise((resolve, reject) => {
+        loadData(`https://bandori.party/api/events/${id}`)
+            .then(response => {
+                resolve(new LocaleEvent(response));
+            })
+            .catch(error => {
+                if (error instanceof ConnectionError)
+                    if (error.status == 400) reject(new EmptyResponseError());
+                reject(error);
+            });
+    });
+}
+
 function getState(start, end) {
     var now = new Date();
     if (now < start && now < end)
@@ -247,5 +263,6 @@ module.exports.loadCharaData = loadCharaData;
 module.exports.loadLive2DModelData = loadLive2DModelData;
 module.exports.loadLive2DCharacterInfo = loadLive2DCharacterInfo;
 module.exports.loadLocaleCardData = loadLocaleCardData;
+module.exports.loadLocaleEventData = loadLocaleEventData;
 module.exports.loadLocaleCharaData = loadLocaleCharaData;
 module.exports.getState = getState;

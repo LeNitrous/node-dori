@@ -1,5 +1,5 @@
 class LocaleCharacter {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.id;
         this.name = data.name;
         this.image = data.image;

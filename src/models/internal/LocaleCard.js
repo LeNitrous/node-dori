@@ -1,8 +1,8 @@
-const utils = require('../utils.js');
-const Constants = require('../Constants.js');
+const utils = require('../../utils.js');
+const Constants = require('../../Constants.js');
 
 class LocaleCard {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.id;
         this.name = data.name;
         this.character = {

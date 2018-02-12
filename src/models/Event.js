@@ -39,9 +39,18 @@ class GameEvent {
         return new Promise((resolve, reject) => 
             utils.loadStampData(rewardStamp[0].rewardId, this.region)
                 .then(response => {
-                    resolve(response)
+                    resolve(response);
                 })
         );
+    }
+
+    getLocale() {
+        return new Promise((resolve, reject) =>
+            utils.loadLocaleEventData(this.id)
+                .then(response => {
+                    resolve(response);
+                })
+        )
     }
 
     getCards() {
