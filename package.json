@@ -1,6 +1,6 @@
 {
   "name": "node-dori",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "BanG Dream! data viewer",
   "main": "index.js",
   "scripts": {
