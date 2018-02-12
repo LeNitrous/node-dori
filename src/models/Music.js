@@ -12,7 +12,7 @@ class Music {
         this.composer = data.composer;
         this.lyricist = data.lyricist;
 
-        if (data.difficulty instanceof Array)
+        if (isNumberArray(data.difficulty))
             this.difficulty = mapDifficultyArray(data.difficulty);
         else
             this.difficulty = mapDifficulty(data.difficulty);
@@ -63,7 +63,11 @@ class Music {
 function typify(string) {
     if (string == 'anime') return 'Cover';
     if (string == 'normal') return 'Original';
-};
+}
+
+function isNumberArray(array) {
+    return array.every(elem => { return typeof elem === "number" })
+}
 
 function mapDifficulty(difficulty) {
     var DIFF_MAP = {};
