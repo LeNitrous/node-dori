@@ -12,10 +12,10 @@ class Music {
         this.composer = data.composer;
         this.lyricist = data.lyricist;
 
-        if (data.difficulty instanceof Object)
-            this.difficulty = mapDifficulty(data.difficulty);
-        else
+        if (data.difficulty instanceof Array)
             this.difficulty = mapDifficultyArray(data.difficulty);
+        else
+            this.difficulty = mapDifficulty(data.difficulty);
 
         this.type = typify(data.tag);
     }
