@@ -1,5 +1,4 @@
 const request = require('superagent');
-const settings = require('./settings.json');
 
 const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
