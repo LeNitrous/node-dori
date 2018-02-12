@@ -215,6 +215,7 @@ module.exports.loadChartData = loadChartData;
 module.exports.loadMusicData = loadMusicData;
 module.exports.loadStampData = loadStampData;
 module.exports.loadCharaData = loadCharaData;
+module.exports.loadCardSkillData = loadCardSkillData;
 module.exports.loadCardScenarioData = loadCardScenarioData;
 module.exports.loadLive2DModelData = loadLive2DModelData;
 module.exports.loadLive2DCharacterInfo = loadLive2DCharacterInfo;

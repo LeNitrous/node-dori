@@ -96,8 +96,8 @@ class Card {
             utils.loadCardData(this.id, this.region)
                 .then(response => {
                     resolve({
-                        parameters: mapCardParameters(response.parameterMap),
-                        episodes: mapCardEpisodes(response.episodes)
+                        parameters: response.parameters,
+                        episodes: response.episodes
                     });
                 })
                 .catch(reject)
