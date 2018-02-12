@@ -4,6 +4,7 @@ const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
 const Koma = require('./models/Koma.js');
 const Music = require('./models/Music.js');
+const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
 
 const Stamp = require('./models/internal/Stamp.js');
@@ -22,16 +23,8 @@ class ConnectionError extends Error {
         super();
         this.name = "ConnectionError";
         this.status = status;
-        this.message = `Server Replied with a status code: ${status}`;
+        this.message = `Server replied with a status code: ${status}`;
         this.response = response;
-    }
-}
-
-class EmptyResponseError extends Error {
-    constructor() {
-        super();
-        this.name = "EmptyResponseError";
-        this.message = "No response was found or response was empty";
     }
 }
 
@@ -50,83 +43,65 @@ function loadData(url) {
             .end((error, response) => {
                 if (!error && response.status === 200)
                     resolve(response.body);
-                else
+                else {
                     reject(new ConnectionError(error.status, error.response));
+                }
             });
     });
 }
 
 function loadCardData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => 
         loadData(`https://api.bangdream.ga/v1/${region}/card/${id}`)
             .then(response => {
                 resolve(new Card(response, region));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadMusicData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => 
         loadData(`https://api.bangdream.ga/v1/${region}/music/${id}`)
             .then(response => {
                 resolve(new Music(response, this.region));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadChartData(id, diff, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => 
         loadData(`https://api.bangdream.ga/v1/${region}/music/chart/${id}/${diff}`)
             .then(response => {
                 resolve(new Chart(response, diff));
             })
-            .catch(error => {
-                if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadStampData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/stamp/${id}`)
             .then(response => {
                 resolve(new Stamp(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadCharaData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://bandori.party/api/cards/${this.id + 500}`)
             .then(response => {
                 resolve(new LocaleCard(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadBandData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/band`)
             .then(response => {
                 var search = { bandId: id };
@@ -137,30 +112,32 @@ function loadBandData(id, region) {
                 });
                 resolve(new Band(match));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadCardSkillData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/skill/cardId/${id}`)
             .then(response => {
                 resolve(new Skill(response, region));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
+}
+
+function loadCardScenarioData(name, region) {
+    return new Promise((resolve, reject) =>
+        loadData(`https://api.bangdream.ga/v1/${region}/scenario/chara/${name}`)
+            .then(response => {
+                resolve(new Scenario(response, region));
+            })
+            .catch(reject)
+    );
 }
 
 function loadLive2DCharacterInfo(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
             .then(response => {
                 var live2d = {
@@ -175,68 +152,48 @@ function loadLive2DCharacterInfo(id, region) {
                 });
                 resolve(live2d);
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });    
+            .catch(reject)
+    );    
 }
 
 function loadLive2DModelData(id, region) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
             .then(response => {
                 resolve(new Live2DModel(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });       
+            .catch(reject)
+    );       
 }
 
 function loadLocaleCardData(id) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://bandori.party/api/members/${id + 5}`)
             .then(response => {
                 resolve(new LocaleCharacter(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadLocaleCharaData(id) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://bandori.party/api/members/${id + 5}`)
             .then(response => {
                 resolve(new LocaleCharacter(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function loadLocaleEventData(id) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) =>
         loadData(`https://bandori.party/api/events/${id}`)
             .then(response => {
                 resolve(new LocaleEvent(response));
             })
-            .catch(error => {
-                if (error instanceof ConnectionError)
-                    if (error.status == 400) reject(new EmptyResponseError());
-                reject(error);
-            });
-    });
+            .catch(reject)
+    );
 }
 
 function getState(start, end) {
@@ -250,7 +207,6 @@ function getState(start, end) {
 }
 
 module.exports.ConnectionError = ConnectionError;
-module.exports.EmptyResponseError = EmptyResponseError;
 module.exports.InvalidParameterError = InvalidParameterError;
 module.exports.loadData = loadData;
 module.exports.loadCardData = loadCardData;
@@ -259,6 +215,7 @@ module.exports.loadChartData = loadChartData;
 module.exports.loadMusicData = loadMusicData;
 module.exports.loadStampData = loadStampData;
 module.exports.loadCharaData = loadCharaData;
+module.exports.loadCardScenarioData = loadCardScenarioData;
 module.exports.loadLive2DModelData = loadLive2DModelData;
 module.exports.loadLive2DCharacterInfo = loadLive2DCharacterInfo;
 module.exports.loadLocaleCardData = loadLocaleCardData;

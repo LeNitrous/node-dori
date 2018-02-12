@@ -43,6 +43,7 @@ class Music {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
 };

@@ -43,6 +43,7 @@ class Gacha {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
 }

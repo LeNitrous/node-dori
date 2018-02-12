@@ -57,6 +57,7 @@ class Card {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         )
     }
     
@@ -66,6 +67,7 @@ class Card {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );        
     }
 
@@ -75,6 +77,7 @@ class Card {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         )
     }
 
@@ -84,6 +87,7 @@ class Card {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
     
@@ -96,6 +100,25 @@ class Card {
                         episodes: mapCardEpisodes(response.episodes)
                     });
                 })
+                .catch(reject)
+        )
+    }
+
+    getEpisode(name) {
+        var search = { type: name };
+        var match = this.episodes.filter(o => {
+            return Object.keys(search).every(k => {
+                return o[k] === search[k];
+            });
+        }).shift();
+        if (match == undefined)
+            throw new utils.InvalidParameterError();
+        return new Promise((resolve, reject) =>
+            utils.loadCardScenarioData(match.scenario, this.region)
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(reject)
         )
     }
 
@@ -165,6 +188,7 @@ function mapCardEpisodes(episodes) {
             scenario: episode.scenarioId
         });
     })
+    return EPISODE_MAP;
 }
 
 module.exports = Card;

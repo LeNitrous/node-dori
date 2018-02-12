@@ -54,6 +54,7 @@ class BandoriApi {
                     });
                     resolve(cardArray);
                 })
+                .catch(reject)
         );
     }
 
@@ -64,6 +65,7 @@ class BandoriApi {
                     if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Card(response, this.region));
                 })
+                .catch(reject)
         );
     }
 
@@ -118,9 +120,10 @@ class BandoriApi {
                     match.forEach(card => {
                         result.push(new Card(card, this.region));
                     });
-                    
+
                     resolve(result);
                 })
+                .catch(reject)
         );
     }
 
@@ -134,6 +137,7 @@ class BandoriApi {
                     });
                     resolve(musicArray);
                 })
+                .catch(reject)
         );
     }
 
@@ -144,6 +148,7 @@ class BandoriApi {
                     if (isNaN(id)) reject(new InvalidParameterError());
                     resolve(new Music(response, this.region));
                 })
+                .catch(reject)
         );
     }
 
@@ -153,6 +158,7 @@ class BandoriApi {
                 .then(response => {
                     resolve(new Event(response, this.region));
                 })
+                .catch(reject)
         );
     }
 
@@ -166,6 +172,7 @@ class BandoriApi {
                     });
                     resolve(komaArray);
                 })
+                .catch(reject)
         )
     }
 
@@ -181,6 +188,7 @@ class BandoriApi {
                     });
                     resolve(new Koma(match));
                 })
+                .catch(reject)
         )
     }
 
@@ -194,6 +202,7 @@ class BandoriApi {
                     });
                     resolve(bandArray);
                 })
+                .catch(reject)
         )
     }
 
@@ -209,6 +218,7 @@ class BandoriApi {
                     });
                     resolve(new Band(match));
                 })
+                .catch(reject)
         )
     }
 }

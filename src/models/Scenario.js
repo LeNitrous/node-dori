@@ -1,10 +1,10 @@
-const Constants = require('../../Constants.js');
+const Constants = require('../Constants.js');
 
 class Scenario {
     constructor(data, region) {
         this.environment = {
-            background: data.backgroundImage,
-            bgm: data.bgm
+            background: data.env.backgroundImage,
+            bgm: data.env.bgm
         }
         this.talk = mapScenarioTalk(data.talk);
     }
@@ -13,7 +13,7 @@ class Scenario {
 function mapScenarioTalk(talk) {
     var TALK_MAP = [];
     talk.forEach(line => {
-        talkArray.push({
+        TALK_MAP.push({
             text: line.text,
             character: {
                 id: line.charaId,

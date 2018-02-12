@@ -23,6 +23,7 @@ class Character {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );        
     }
 
@@ -32,7 +33,8 @@ class Character {
                 .then(response => {
                     resolve(response);
                 })
-        )
+                .catch(reject)
+        );
     }
 }
 

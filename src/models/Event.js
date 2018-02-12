@@ -41,6 +41,7 @@ class GameEvent {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
 
@@ -50,7 +51,8 @@ class GameEvent {
                 .then(response => {
                     resolve(response);
                 })
-        )
+                .catch(reject)
+        );
     }
 
     getCards() {
@@ -65,6 +67,7 @@ class GameEvent {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
 
@@ -80,7 +83,8 @@ class GameEvent {
                 .then(response => {
                     resolve(response);
                 })
-        )
+                .catch(reject)
+        );
     }
 
     getColor() {

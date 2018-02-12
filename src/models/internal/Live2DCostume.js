@@ -23,7 +23,8 @@ class Live2DCostume {
                 .then(data => {
                     resolve(data)
                 })
-        )
+                .catch(reject)
+        );
     }
 }
 
