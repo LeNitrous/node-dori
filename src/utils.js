@@ -168,9 +168,9 @@ function loadLive2DModelData(id, region) {
 
 function loadLocaleCardData(id) {
     return new Promise((resolve, reject) =>
-        loadData(`https://bandori.party/api/members/${id + 5}`)
+        loadData(`https://bandori.party/api/cards/${id + 500}`)
             .then(response => {
-                resolve(new LocaleCharacter(response));
+                resolve(new LocaleCard(response));
             })
             .catch(reject)
     );

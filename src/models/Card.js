@@ -48,6 +48,7 @@ class Card {
                 .then(response => {
                     resolve(response);
                 })
+                .catch(reject)
         );
     }
 
