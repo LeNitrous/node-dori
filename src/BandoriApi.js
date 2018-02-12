@@ -152,6 +152,49 @@ class BandoriApi {
         );
     }
 
+    getMusicByQuery(term) {
+        return new Promise((resolve, reject) =>
+            this.query(`/music`)
+                .then(response => {
+                    term.map(str => { return str.toLowerCase() });
+                    var allowBands = ['popipa', 'afuro', 'harohapi', 'pasupare', 'roselia', 'other'];
+                    var allowTypes = ['cover', 'original'];
+
+                    var term_band = term.filter(str => { return allowBands.includes(str) }).shift();
+                    var term_type = term.filter(str => { return allowTypes.includes(str) }).shift();
+                    var search = {};
+                    
+                    if (term_type == 'cover')
+                        search.tag = 'anime';
+                    else if (term_type == 'original')
+                        search.tag = 'normal';
+
+                    if (term_band != 'other')
+                        search.bandId = allowBands.indexOf(term_band) + 1;
+                    else {
+                        response.data = response.data.filter(o => {
+                            return o.bandId > 5
+                        });
+                    };
+
+                    console.log(search);
+
+                    var match = response.data.filter(o => {
+                        return Object.keys(search).every(k => {
+                            return o[k] === search[k];
+                        });
+                    });
+                    var result = [];
+                    match.forEach(elem => {
+                        result.push(new Music(elem, this.region));
+                    });
+
+                    resolve(result);
+                })
+                .catch(reject)
+        );
+    }
+
     getCurrentEvent() {
         return new Promise((resolve, reject) =>
             this.query('/event')
