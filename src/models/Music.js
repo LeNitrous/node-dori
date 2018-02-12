@@ -12,14 +12,26 @@ class Music {
         this.composer = data.composer;
         this.lyricist = data.lyricist;
 
-        if (data.difficulty)
-            this.difficulty = mapDifficulty(data.difficulty)
+        if (data.difficulty instanceof Object)
+            this.difficulty = mapDifficulty(data.difficulty);
+        else
+            this.difficulty = mapDifficultyArray(data.difficulty);
 
         this.type = typify(data.tag);
     }
 
     toString() {
         return `${this.band} - ${this.title}`;
+    }
+
+    getDifficulty() {
+        return new Promise((resolve, reject) =>
+            utils.loadMusicData(this.id, this.region)
+                .then(music => {
+                    resolve(music.difficulty);
+                })
+                .catch(reject)
+        );
     }
 
     getChart(diff) {
@@ -54,9 +66,9 @@ function typify(string) {
 };
 
 function mapDifficulty(difficulty) {
-    var newObj = {};
+    var DIFF_MAP = {};
     difficulty.forEach(diff => {
-        newObj[diff.difficulty] = {
+        DIFF_MAP[diff.difficulty] = {
             name: diff.difficulty,
             level: diff.level,
             maxCombo: diff.combo,
@@ -72,8 +84,29 @@ function mapDifficulty(difficulty) {
             }
         };
     });
-    return newObj;
+    return DIFF_MAP;
 };
+
+function mapDifficultyArray(difficulty) {
+    return {
+        easy: {
+            name: 'easy',
+            level: difficulty[0]
+        },
+        normal: {
+            name: 'normal',
+            level: difficulty[1]
+        },
+        hard: {
+            name: 'hard',
+            level: difficulty[2]
+        },
+        expert: {
+            name: 'expert',
+            level: difficulty[3]
+        }
+    };
+}
 
 function mapMultiScores(multiLiveScoreMap) {
     var newObj = {};

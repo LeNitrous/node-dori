@@ -177,8 +177,6 @@ class BandoriApi {
                         });
                     };
 
-                    console.log(search);
-
                     var match = response.data.filter(o => {
                         return Object.keys(search).every(k => {
                             return o[k] === search[k];
