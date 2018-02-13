@@ -1,6 +1,5 @@
 const request = require('superagent');
 const utils = require('./utils.js');
-const cron = require('cron');
 const fs = require('fs');
 const Constants = require('./Constants.js');
 
@@ -226,7 +225,9 @@ class BandoriApi {
                     return Object.keys(search).every(k => {
                         return o[k] === search[k];
                         });
-                    });
+                    }).shift();
+                    if (match.length == 0)
+                        reject(new InvalidParameterError());
                     resolve(new Koma(match, this.region));
                 })
                 .catch(reject)
