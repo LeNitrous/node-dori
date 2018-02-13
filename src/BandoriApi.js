@@ -9,10 +9,10 @@ const Koma = require('./models/Koma.js');
 const Card = require('./models/Card.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
+const Scenario = require('./models/Scenario.js')
 const Character = require('./models/Character.js');
 
 const ConnectionError = utils.ConnectionError;
-const EmptyResponseError = utils.EmptyResponseError;
 const InvalidParameterError = utils.InvalidParameterError;
 
 const serverRegion = [
@@ -209,7 +209,7 @@ class BandoriApi {
                 .then(response => {
                     var komaArray = [];
                     response.data.forEach(data => {
-                        komaArray.push(new Koma(data, region));
+                        komaArray.push(new Koma(data, this.region));
                     });
                     resolve(komaArray);
                 })
@@ -227,7 +227,7 @@ class BandoriApi {
                         return o[k] === search[k];
                         });
                     });
-                    resolve(new Koma(match));
+                    resolve(new Koma(match, this.region));
                 })
                 .catch(reject)
         )
@@ -239,7 +239,7 @@ class BandoriApi {
                 .then(response => {
                     var bandArray = [];
                     response.forEach(data => {
-                        bandArray.push(new Band(data, region));
+                        bandArray.push(new Band(data, this.region));
                     });
                     resolve(bandArray);
                 })
@@ -257,7 +257,17 @@ class BandoriApi {
                         return o[k] === search[k];
                         });
                     });
-                    resolve(new Band(match));
+                    resolve(new Band(match, this.region));
+                })
+                .catch(reject)
+        )
+    }
+
+    getCharacterByID(id) {
+        return new Promise((resolve, reject) => 
+            this.query(`/chara/${id}`)
+                .then(response => {
+                    resolve(new Character(response, this.region));
                 })
                 .catch(reject)
         )

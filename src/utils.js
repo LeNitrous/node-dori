@@ -145,10 +145,10 @@ function loadLive2DCharacterInfo(id, region) {
                     costumes: []
                 };
                 response.voices.forEach(voice => {
-                    live2d.actions.push(new Live2DAction(voice));
+                    live2d.actions.push(new Live2DAction(voice, region));
                 });
                 response.costums.forEach(costume => {
-                    live2d.costumes.push(new Live2DCostume(costume));
+                    live2d.costumes.push(new Live2DCostume(costume, region));
                 });
                 resolve(live2d);
             })
@@ -158,9 +158,9 @@ function loadLive2DCharacterInfo(id, region) {
 
 function loadLive2DModelData(id, region) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
+        loadData(`https://api.bangdream.ga/v1/${region}/live2d/model/${id}`)
             .then(response => {
-                resolve(new Live2DModel(response));
+                resolve(new Live2DModel(response, region));
             })
             .catch(reject)
     );       

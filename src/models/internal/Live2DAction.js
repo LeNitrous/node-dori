@@ -3,6 +3,7 @@ const Constants = require('../../Constants.js');
 class Live2DAction {
     constructor(data, region) {
         this.id = data.live2dId;
+        this.region = region;
         this.motion_name = data.motion;
         this.voice = `https://res.bangdream.ga/assets/sound/voice/system/${data.voice}.mp3`;
         this.voice_name = data.voice;
