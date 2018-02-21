@@ -155,12 +155,12 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query(`/music`)
                 .then(response => {
-                    term.map(str => { return str.toLowerCase() });
+                    query.map(str => { return str.toLowerCase() });
                     var allowBands = ['popipa', 'afuro', 'harohapi', 'pasupare', 'roselia', 'other'];
                     var allowTypes = ['cover', 'original'];
 
-                    var term_band = term.filter(str => { return allowBands.includes(str) }).shift();
-                    var term_type = term.filter(str => { return allowTypes.includes(str) }).shift();
+                    var term_band = query.filter(str => { return allowBands.includes(str) }).shift();
+                    var term_type = query.filter(str => { return allowTypes.includes(str) }).shift();
                     var search = {};
                     
                     if (term_type == 'cover')

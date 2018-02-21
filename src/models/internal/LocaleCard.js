@@ -21,12 +21,9 @@ class LocaleCard {
         }
         this.skill = {
             name: data.skill_name,
-            type: data.i_skill_type,
-            details: data.skill_details
-        }
-        this.side_skill = {
-            type: data.i_side_skill_type,
-            details: data.side_skill_details
+            main_type: data.i_skill_type,
+            side_type: data.i_side_skill_type,
+            description: data.full_skill
         }
         this.parameter = {
             trained_max: {

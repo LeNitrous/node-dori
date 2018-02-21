@@ -61,7 +61,7 @@ class Card {
                 .catch(reject)
         )
     }
-    
+
     getCharacterLocale() {
         return new Promise((resolve, reject) => 
             utils.loadLocaleCharaData(this.character.id)
@@ -81,7 +81,7 @@ class Card {
                 .catch(reject)
         )
     }
-
+    
     getSkill() {
         return new Promise((resolve, reject) => 
             utils.loadCardSkillData(this.id, this.region)
