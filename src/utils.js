@@ -2,7 +2,6 @@ const request = require('superagent');
 
 const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
-const Koma = require('./models/Koma.js');
 const Music = require('./models/Music.js');
 const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
