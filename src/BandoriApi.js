@@ -3,8 +3,7 @@ const utils = require('./utils.js');
 const fs = require('fs');
 const Constants = require('./Constants.js');
 
-const Band = require('./models/Band.js')
-const Koma = require('./models/Koma.js');
+const Band = require('./models/Band.js');
 const Card = require('./models/Card.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
