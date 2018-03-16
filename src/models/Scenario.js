@@ -20,7 +20,7 @@ function mapScenarioTalk(talk) {
                 name: Constants.Characters[line.charaId]
             },
             displayName: line.charaName,
-            voice: line.voice
+            voice: "https://res.bangdream.ga/" + line.voice
         });
     });
     return TALK_MAP;

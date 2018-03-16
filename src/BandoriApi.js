@@ -202,38 +202,6 @@ class BandoriApi {
         );
     }
 
-    getKomas() {
-        return new Promise((resolve, reject) => 
-            this.query('/sfc')
-                .then(response => {
-                    var komaArray = [];
-                    response.data.forEach(data => {
-                        komaArray.push(new Koma(data, this.region));
-                    });
-                    resolve(komaArray);
-                })
-                .catch(reject)
-        )
-    }
-
-    getKomaByID(id) {
-        return new Promise((resolve, reject) => 
-            this.query('/sfc')
-                .then(response => {
-                    var search = { singleFrameCartoonId: id };
-                    var match = response.data.filter(o => {
-                    return Object.keys(search).every(k => {
-                        return o[k] === search[k];
-                        });
-                    }).shift();
-                    if (match.length == 0)
-                        reject(new InvalidParameterError());
-                    resolve(new Koma(match, this.region));
-                })
-                .catch(reject)
-        )
-    }
-
     getBands() {
         return new Promise((resolve, reject) => 
             this.query('/band')
