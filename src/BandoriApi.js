@@ -13,13 +13,6 @@ const Character = require('./models/Character.js');
 const ConnectionError = utils.ConnectionError;
 const InvalidParameterError = utils.InvalidParameterError;
 
-const serverRegion = [
-    "jp",   // Japan
-    "tw",   // Taiwan
-//  "kr",   // Korea
-//  "en",   // International
-]
-
 class BandoriApi {
     constructor(options = {}) {
         this.region = options.region;
@@ -36,8 +29,10 @@ class BandoriApi {
                 .end((error, response) => {
                     if (!error && response.status === 200)
                         resolve(response.body);
-                    else
+                    else if (response.status !== undefined)
                         reject(new ConnectionError(error.status, error.response));
+                    else
+                        reject(new Error(error));
                 });
         });
     }
