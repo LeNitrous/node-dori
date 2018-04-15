@@ -29,7 +29,7 @@ class BandoriApi {
                 .end((error, response) => {
                     if (!error && response.status === 200)
                         resolve(response.body);
-                    else if (response.status !== undefined)
+                    else if (!response)
                         reject(new ConnectionError(error.status, error.response));
                     else
                         reject(new Error(error));
