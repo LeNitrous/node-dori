@@ -6,11 +6,13 @@ class Music {
         this.region = region;
         this.bgm = `https://res.bangdream.ga/assets/sound/` + data.bgmId + '.mp3';
         this.jacket = `https://res.bangdream.ga/assets/musicjacket/` + data.jacketImage + '_jacket.png';
+        this.assetBundleName = data.chartAssetBundleName;
         this.title = data.title;
         this.band = data.bandName;
         this.arranger = data.arranger;
         this.composer = data.composer;
         this.lyricist = data.lyricist;
+        this.publishTime = data.publishedAt;
 
         if (isNumberArray(data.difficulty))
             this.difficulty = mapDifficultyArray(data.difficulty);
@@ -35,20 +37,21 @@ class Music {
     }
 
     getChart(diff) {
+        diff = diff.toLowerCase();
         var allowed = ['easy', 'normal', 'hard', 'expert'];
         if (!allowed.includes(diff) && diff != undefined)
             throw new utils.InvalidParameterError('Invalid difficulty');
         var loadDiffs;
         if (diff == undefined) {
             loadDiffs = [
-                utils.loadChartData(this.id, 'easy', this.region),
-                utils.loadChartData(this.id, 'normal', this.region),
-                utils.loadChartData(this.id, 'hard', this.region),
-                utils.loadChartData(this.id, 'expert', this.region)
+                utils.loadChartData(this, 'easy'),
+                utils.loadChartData(this, 'normal'),
+                utils.loadChartData(this, 'hard'),
+                utils.loadChartData(this, 'expert')
             ];
         }
         else {
-            loadDiffs = [utils.loadChartData(this.id, diff, this.region)];
+            loadDiffs = [utils.loadChartData(this, diff)];
         };
         return new Promise((resolve, reject) => 
             Promise.all(loadDiffs)

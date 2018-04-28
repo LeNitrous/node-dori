@@ -1,8 +1,9 @@
 class Chart {
     constructor(data, diff) {
         this.difficulty = diff;
-        this.data = data.slice(1);
-        this.combo = data.length - 1;
+        this.bpm = data.bpm;
+        this.notes = data.notes.slice(1);
+        this.fever = data.fever;
     }
 }
 
