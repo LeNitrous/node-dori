@@ -73,7 +73,6 @@ function loadChartData(music, diff) {
     return new Promise((resolve, reject) => 
         loadData(`https://api.bangdream.ga/v1/${music.region}/music/chart/${music.id}/${diff}`)
             .then(response => {
-                console.log(response);
                 resolve(new Chart(response, diff));
             })
             .catch(reject)
