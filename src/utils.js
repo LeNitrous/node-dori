@@ -159,7 +159,7 @@ function loadLive2DModelData(id, region) {
     return new Promise((resolve, reject) =>
         loadData(`https://api.bangdream.ga/v1/${region}/live2d/model/${id}`)
             .then(response => {
-                resolve(new Live2DModel(response, region));
+                resolve(response);
             })
             .catch(reject)
     );       

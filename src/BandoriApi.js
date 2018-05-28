@@ -235,6 +235,16 @@ class BandoriApi {
                 .catch(reject)
         )
     }
+
+    getDataVersion() {
+        return new Promise((resolve, reject) => 
+            this.query(`/version/res`)
+                .then(response => {
+                    resolve(response);
+                })
+                .catch(reject)
+        )
+    }
 }
 
 module.exports = BandoriApi;
