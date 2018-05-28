@@ -10,7 +10,6 @@ const Stamp = require('./models/internal/Stamp.js');
 const Chart = require('./models/internal/Chart.js');
 const Skill = require('./models/internal/Skill.js');
 const Degree = require('./models/internal/Degree.js');
-const Live2DModel = require('./models/internal/Live2DModel');
 const Live2DAction = require('./models/internal/Live2DAction');
 const Live2DCostume = require('./models/internal/Live2DCostume');
 const LocaleCard = require('./models/internal/LocaleCard.js');
