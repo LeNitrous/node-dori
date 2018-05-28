@@ -27,8 +27,12 @@ class BandoriApi {
             request.get(this.apiUrl + endpoint)
                 .set('User-Agent', 'node-dori')
                 .end((error, response) => {
-                    if (!error && response.status === 200)
-                        resolve(response.body);
+                    if (!error && response.status === 200) {
+                        if (Object.keys(response.body).length === 0)
+                            resolve(response.text);
+                        else
+                            resolve(response.body);
+                    }
                     else if (!response)
                         reject(new ConnectionError(error.status, error.response));
                     else
