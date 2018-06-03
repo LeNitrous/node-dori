@@ -5,6 +5,7 @@ const Constants = require('./Constants.js');
 
 const Band = require('./models/Band.js');
 const Card = require('./models/Card.js');
+const Gacha = require('./models/Gacha.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
 const Scenario = require('./models/Scenario.js')
@@ -248,6 +249,28 @@ class BandoriApi {
                 })
                 .catch(reject)
         )
+    }
+
+    getGachas() {
+        return new Promise((resolve, reject) =>
+            this.query(`/gacha`)
+                .then(response => {
+                    resolve(response.data.map(gacha => new Gacha(gacha)));
+                })
+                .catch(reject)
+        );
+    }
+
+    getActiveGachas() {
+        return new Promise((resolve, reject) =>
+            this.query(`/gacha`)
+                .then(response => {
+                    var gachas = response.data.map(gacha => new Gacha(gacha))
+                        .filter(gacha => !gacha.getState());
+                    resolve(gachas);
+                })
+                .catch(reject)
+        );
     }
 }
 
