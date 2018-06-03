@@ -16,7 +16,7 @@ class Gacha {
         this.start = data.publishedAt;
         this.end = data.closedAt;
         this.period = data.gachaPeriod;
-        this.image = `https://res.bangdream.ga/assets-jp/gacha/screen/${data.resourceName}_logo.png`;
+        this.image = `https://res.bangdream.ga/assets-${region}/gacha/screen/${data.resourceName}_logo.png`;
         this.details = data.details;
     }
 
