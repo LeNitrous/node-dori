@@ -1,12 +1,8 @@
 const utils = require('../utils.js');
 
 class Gacha {
-    constructor(data, region) {
-        var self = this;
-        var pick = [];
-
+    constructor(data) {
         this.id = data.gachaId;
-        this.region = region;
         this.name = data.gachaName;
         this.resName = data.resourceName;
         this.sequence = data.seq;
@@ -33,11 +29,6 @@ class Gacha {
 
     getCards() {
         var cards = [];
-        var pickup = this.details.filter(o => {
-            return o.pickup == true;
-        }).forEach(o => {
-            cards.push(utils.loadCardData(o.situationId, this.region))
-        })
         return new Promise((resolve, reject) => 
             Promise.all(cards)
                 .then(response => {

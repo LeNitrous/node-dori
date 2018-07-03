@@ -2,9 +2,8 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class Card {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.cardId;
-        this.region = region;
         this.title = data.title;
         this.character = {
             id: data.characterId,

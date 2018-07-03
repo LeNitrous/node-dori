@@ -1,6 +1,5 @@
 const request = require('superagent');
 const utils = require('./utils.js');
-const fs = require('fs');
 const Constants = require('./Constants.js');
 
 const Band = require('./models/Band.js');
@@ -8,10 +7,9 @@ const Card = require('./models/Card.js');
 const Gacha = require('./models/Gacha.js');
 const Music = require('./models/Music.js');
 const Event = require('./models/Event.js');
-const Scenario = require('./models/Scenario.js')
+const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
 
-const ConnectionError = utils.ConnectionError;
 const InvalidParameterError = utils.InvalidParameterError;
 
 class BandoriApi {
@@ -34,8 +32,6 @@ class BandoriApi {
                         else
                             resolve(response.body);
                     }
-                    else if (!response)
-                        reject(new ConnectionError(error.status, error.response));
                     else
                         reject(new Error(error));
                 });
@@ -46,11 +42,11 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query('/card')
                 .then(response => {
-                    var cardArray = [];
-                    response.data.forEach(elem => {
-                        cardArray.push(new Card(elem, this.region))
+                    var dataMap = new Map();
+                    response.data.forEach(card => {
+                        dataMap.set(card.cardId, new Card(card, this.region));
                     });
-                    resolve(cardArray);
+                    resolve(dataMap);
                 })
                 .catch(reject)
         );
@@ -67,73 +63,15 @@ class BandoriApi {
         );
     }
 
-    getCardByQuery(query) {
-        return new Promise((resolve, reject) =>
-            this.query('/card')
-                .then(response => {
-                    var nameFormat = query.find(str => { return str.match(/[a-zA-z]+[1-4]/g) });
-                    var allowAttrs = ['powerful', 'power', 'pure', 'happy', 'cool'];
-                    var allowMemberNames = [];
-                    Object.values(this.constants.Characters)
-                        .forEach((elem, index) => {
-                            allowMemberNames[index] = elem.split(' ').pop().toLowerCase();
-                        });
-        
-                    var rarity, id, attr;
-
-                    id = query.filter(str => { return allowMemberNames.includes(str.toLowerCase()) }).shift();
-                    rarity = (query.find(num => { return num.match(/[1-4]/g) })) ? 
-                        query.find(num => { return num.match(/[1-4]/g) }) : undefined;
-                    attr = query.filter(str => allowAttrs.includes(str.toLowerCase())).shift();
-                    attr = (attr == 'power') ? 'powerful' : attr;
-
-                    var search = {};
-                    if (id)
-                        search.characterId = allowMemberNames.indexOf(id) + 1;
-                    if (rarity)
-                        search.rarity = parseInt(rarity);
-                    if (attr)
-                        search.attr = attr;
-
-                    if (Object.keys(search).length == 0)
-                        reject(new InvalidParameterError());
-
-                    response.data = response.data.filter(o => {
-                        return o.title !== "ガルパ杯";
-                    });
-                        
-                    var match = response.data.filter(o => {
-                        return Object.keys(search).every(k => {
-                            return o[k] === search[k];
-                        });
-                    });
-
-                    match.sort((a, b) => {
-                        if (a.rarity > b.rarity) return -1;
-                        if (a.rarity < b.rarity) return 1;
-                        return 0;
-                    });
-
-                    var result = [];
-                    match.forEach(card => {
-                        result.push(new Card(card, this.region));
-                    });
-
-                    resolve(result);
-                })
-                .catch(reject)
-        );
-    }
-
     getMusic() {
         return new Promise((resolve, reject) =>
             this.query('/music')
                 .then(response => {
-                    var musicArray = [];
-                    response.data.forEach(elem => {
-                        musicArray.push(new Music(elem, this.region))
+                    var songMap = new Map();
+                    response.data.forEach(song => {
+                        songMap.set(song.musicId, new Music(song, this.region));
                     });
-                    resolve(musicArray);
+                    resolve(songMap);
                 })
                 .catch(reject)
         );
@@ -150,52 +88,11 @@ class BandoriApi {
         );
     }
 
-    getMusicByQuery(term) {
-        return new Promise((resolve, reject) =>
-            this.query(`/music`)
-                .then(response => {
-                    term.map(str => { return str.toLowerCase() });
-                    var allowBands = ['popipa', 'afuro', 'harohapi', 'pasupare', 'roselia', 'other'];
-                    var allowTypes = ['cover', 'original'];
-
-                    var term_band = term.filter(str => { return allowBands.includes(str) }).shift();
-                    var term_type = term.filter(str => { return allowTypes.includes(str) }).shift();
-                    var search = {};
-                    
-                    if (term_type == 'cover')
-                        search.tag = 'anime';
-                    else if (term_type == 'original')
-                        search.tag = 'normal';
-
-                    if (term_band != 'other')
-                        search.bandId = allowBands.indexOf(term_band) + 1;
-                    else {
-                        response.data = response.data.filter(o => {
-                            return o.bandId > 5
-                        });
-                    };
-
-                    var match = response.data.filter(o => {
-                        return Object.keys(search).every(k => {
-                            return o[k] === search[k];
-                        });
-                    });
-                    var result = [];
-                    match.forEach(elem => {
-                        result.push(new Music(elem, this.region));
-                    });
-
-                    resolve(result);
-                })
-                .catch(reject)
-        );
-    }
-
     getCurrentEvent() {
         return new Promise((resolve, reject) =>
             this.query('/event')
                 .then(response => {
-                    resolve(new Event(response, this.region));
+                    resolve(new Event(response));
                 })
                 .catch(reject)
         );
@@ -205,11 +102,11 @@ class BandoriApi {
         return new Promise((resolve, reject) => 
             this.query('/band')
                 .then(response => {
-                    var bandArray = [];
+                    var bandMap = new Map();
                     response.forEach(data => {
-                        bandArray.push(new Band(data, this.region));
+                        bandMap.set(band.bandId, new Band(band));
                     });
-                    resolve(bandArray);
+                    resolve(bandMap);
                 })
                 .catch(reject)
         )
@@ -220,12 +117,12 @@ class BandoriApi {
             this.query('/band')
                 .then(response => {
                     var search = { bandId: id };
-                    var match = response.filter(o => {
+                    var band = response.filter(o => {
                     return Object.keys(search).every(k => {
                         return o[k] === search[k];
                         });
                     });
-                    resolve(new Band(match, this.region));
+                    resolve(new Band(band));
                 })
                 .catch(reject)
         )
@@ -235,7 +132,7 @@ class BandoriApi {
         return new Promise((resolve, reject) => 
             this.query(`/chara/${id}`)
                 .then(response => {
-                    resolve(new Character(response, this.region));
+                    resolve(new Character(response));
                 })
                 .catch(reject)
         )
@@ -255,7 +152,11 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query(`/gacha`)
                 .then(response => {
-                    resolve(response.data.map(gacha => new Gacha(gacha)));
+                    var gachaMap = new Map();
+                    response.data.forEach(gacha => {
+                        gachaMap.set(gacha.gachaId, new Gacha(gacha));
+                    });
+                    resolve(gachaMap);
                 })
                 .catch(reject)
         );
@@ -271,6 +172,23 @@ class BandoriApi {
                 })
                 .catch(reject)
         );
+    }
+
+    getDatabase() {
+        return new Promise((resolve, reject) => {
+            if (!this.region)
+                return reject(new Error('Region is not set'));
+            request.get(`https://res.bangdream.ga/static/MasterDB_${region}.json`)
+                .set('User-Agent', 'node-dori')
+                .end((error, response) => {
+                    if (!error && response.status === 200)
+                        resolve(response.body);
+                    else if (!response)
+                        reject(new ConnectionError(error.status, error.response));
+                    else
+                        reject(new Error(error));
+                })
+        });
     }
 }
 

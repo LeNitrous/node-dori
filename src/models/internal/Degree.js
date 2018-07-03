@@ -1,5 +1,5 @@
 class Degree {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.degreeId;
         this.name = data.degreeName;
         this.description = data.description;

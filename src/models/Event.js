@@ -2,9 +2,8 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class GameEvent {
-    constructor(data, region) {  
+    constructor(data) {  
         this.id = data.eventId;
-        this.region = region;
         this.name = data.eventName;
         this.type = data.eventType;
         this.image = `https://res.bangdream.ga/assets-${region}/homebanner_banner_event${data.eventId}.png`
@@ -57,11 +56,6 @@ class GameEvent {
 
     getCards() {
         var cards = [];
-        var rewardCards = this.rewards.filter(reward => {
-            return reward.rewardType == 'situation'
-        }).forEach(o => {
-            cards.push(utils.loadCardData(o.rewardId, this.region));
-        });
         return new Promise((resolve, reject) => 
             Promise.all(cards)
                 .then(response => {

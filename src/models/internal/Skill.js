@@ -1,5 +1,5 @@
 class Skill {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.skillId;
         this.name = data.skillName;
         this.details = mapSkillDetail(data.skillDetail);

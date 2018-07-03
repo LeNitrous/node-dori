@@ -1,9 +1,8 @@
 const utils = require('../utils.js');
 
 class Music {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.musicId;
-        this.region = region;
         this.bgm = `https://res.bangdream.ga/assets/sound/` + data.bgmId + '.mp3';
         this.jacket = `https://res.bangdream.ga/assets/musicjacket/` + data.jacketImage + '_jacket.png';
         this.assetBundleName = data.chartAssetBundleName;
@@ -92,20 +91,16 @@ function mapDifficulty(difficulty) {
 function mapDifficultyArray(difficulty) {
     return {
         easy: {
-            name: 'easy',
             level: difficulty[0]
         },
         normal: {
-            name: 'normal',
-            level: difficulty[1]
+            level: difficulty[3]
         },
         hard: {
-            name: 'hard',
             level: difficulty[2]
         },
         expert: {
-            name: 'expert',
-            level: difficulty[3]
+            level: difficulty[1]
         }
     };
 }

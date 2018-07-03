@@ -1,9 +1,9 @@
 class Chart {
-    constructor(data, diff) {
-        this.difficulty = diff;
-        this.bpm = data.bpm;
-        this.notes = data.notes.slice(1);
-        this.fever = data.fever;
+    constructor(data) {
+        this.bpm = data.metadata.bpm;
+        this.maxCombo = data.metadata.combo;
+        this.notes = data.objects.filter(note => note.type === "Object");
+        this.points = data.objects.filter(point => point.type === "System");
     }
 }
 

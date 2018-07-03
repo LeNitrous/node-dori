@@ -1,7 +1,7 @@
 const Constants = require('../Constants.js');
 
 class Scenario {
-    constructor(data, region) {
+    constructor(data) {
         this.environment = {
             background: data.env.backgroundImage,
             bgm: data.env.bgm

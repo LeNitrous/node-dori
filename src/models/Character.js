@@ -1,9 +1,8 @@
 const utils = require('../utils.js');
 
 class Character {
-    constructor(data, region) {
+    constructor(data) {
         this.id = data.characterId;
-        this.region = region;
         this.band = data.bandId;
         this.type = data.characterType;
         this.firstName = data.firstName;
@@ -11,10 +10,6 @@ class Character {
         this.ruby = data.ruby;
         this.sdAssetBundleName = data.sdAssetBundleName;
         this.profile = data.profile;
-    }
-
-    toString() {
-        return this.lastName + this.firstName;
     }
 
     getCharacterLocale() {
