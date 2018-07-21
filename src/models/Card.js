@@ -38,7 +38,7 @@ class Card {
     }
 
     toString() {
-        return `${this.rarity}★ 【${this.title}】 ${this.character.name}`
+        return `${"★".repeat(this.rarity)} 【${this.title}】 ${this.character.name}`
     }
 
     getLocale() {
