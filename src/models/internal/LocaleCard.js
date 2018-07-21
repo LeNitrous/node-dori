@@ -4,7 +4,7 @@ const Constants = require('../../Constants.js');
 class LocaleCard {
     constructor(data) {
         this.id = data.id;
-        this.name = data.name;
+        this.title = data.name;
         this.character = {
             id: data.member - 5,
             name: Constants.Characters[data.member - 5]
