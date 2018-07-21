@@ -92,7 +92,7 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query('/event')
                 .then(response => {
-                    resolve(new Event(response));
+                    resolve(new Event(response, this.region));
                 })
                 .catch(reject)
         );

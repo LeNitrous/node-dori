@@ -2,8 +2,9 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class GameEvent {
-    constructor(data) {  
+    constructor(data, region) {  
         this.id = data.eventId;
+        this.region = region;
         this.name = data.eventName;
         this.type = data.eventType;
         this.image = `https://res.bangdream.ga/assets-${region}/homebanner_banner_event${data.eventId}.png`
