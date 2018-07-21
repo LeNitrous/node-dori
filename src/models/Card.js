@@ -22,6 +22,7 @@ class Card {
             trained: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_card_after_training.png`,
             trained_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
             trained_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
+            chibi: `https://res.bangdream.ga/assets-jp/characters/livesd/${data.live2dRes}_sdchara.png`
         }
         this.parameterMax = {
             performance: data.maxPerformance,
