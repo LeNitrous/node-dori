@@ -1,9 +1,10 @@
 class Stamp {
-    constructor(data) {
+    constructor(data, region) {
         this.id = data.stampId;
+        this.region = region;
         this.type = data.stampType;
         this.seq = data.seq;
-        this.image = `https://res.bangdream.ga/assets-jp/stamp/01_${data.imageName}.png`;
+        this.image = `https://res.bangdream.ga/assets-${region}/stamp/01_${data.imageName}.png`;
     }
 }
 
