@@ -1,8 +1,9 @@
 const utils = require('../utils.js');
 
 class Gacha {
-    constructor(data) {
+    constructor(data, region) {
         this.id = data.gachaId;
+        this.region = region;
         this.name = data.gachaName;
         this.resName = data.resourceName;
         this.sequence = data.seq;

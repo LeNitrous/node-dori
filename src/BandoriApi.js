@@ -154,7 +154,7 @@ class BandoriApi {
                 .then(response => {
                     var gachaMap = new Map();
                     response.data.forEach(gacha => {
-                        gachaMap.set(gacha.gachaId, new Gacha(gacha));
+                        gachaMap.set(gacha.gachaId, new Gacha(gacha, this.region));
                     });
                     resolve(gachaMap);
                 })
@@ -166,7 +166,7 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query(`/gacha`)
                 .then(response => {
-                    var gachas = response.data.map(gacha => new Gacha(gacha))
+                    var gachas = response.data.map(gacha => new Gacha(gacha, this.region))
                         .filter(gacha => !gacha.getState());
                     resolve(gachas);
                 })
