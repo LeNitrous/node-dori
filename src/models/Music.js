@@ -37,7 +37,7 @@ class Music {
     }
 
     getChart(diff) {
-        diff = diff.toLowerCase();
+        diff = (typeof diff === 'string') ? diff.toLowerCase() : undefined;
         var allowed = ['easy', 'normal', 'hard', 'expert'];
         if (!allowed.includes(diff) && diff != undefined)
             throw new utils.InvalidParameterError('Invalid difficulty');
