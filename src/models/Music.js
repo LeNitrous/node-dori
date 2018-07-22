@@ -11,6 +11,7 @@ class Music {
         this.arranger = data.arranger;
         this.composer = data.composer;
         this.lyricist = data.lyricist;
+        this.description = data.description || '';
         this.publishTime = data.publishedAt;
 
         if (isNumberArray(data.difficulty))
