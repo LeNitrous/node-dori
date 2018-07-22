@@ -1,5 +1,7 @@
 class Chart {
-    constructor(data) {
+    constructor(data, music, difficulty) {
+        this.id = music.id;
+        this.difficulty = difficulty;
         this.bpm = data.metadata.bpm;
         this.maxCombo = data.metadata.combo;
         this.notes = data.objects.filter(note => note.type === "Object");
