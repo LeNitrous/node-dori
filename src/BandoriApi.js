@@ -5,6 +5,7 @@ const Constants = require('./Constants.js');
 const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
 const Music = require('./models/Music.js');
+const Gacha = require('./models/Gacha.js');
 const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
 
