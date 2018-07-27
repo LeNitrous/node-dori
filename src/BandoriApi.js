@@ -6,6 +6,7 @@ const Card = require('./models/Card.js');
 const Band = require('./models/Band.js');
 const Music = require('./models/Music.js');
 const Gacha = require('./models/Gacha.js');
+const Event = require('./models/Event.js');
 const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
 
