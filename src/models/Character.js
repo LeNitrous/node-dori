@@ -24,7 +24,7 @@ class Character {
 
     getLive2DInfo() {
         return new Promise((resolve, reject) => 
-            utils.loadLive2DCharacterInfo(this.id, this.region)
+            utils.loadLive2DCharacterInfo(this.id, this)
                 .then(response => {
                     resolve(response);
                 })

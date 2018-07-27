@@ -1,8 +1,9 @@
 const utils = require('../utils.js');
 
 class Music {
-    constructor(data) {
+    constructor(data, api) {
         this.id = data.musicId;
+        this.api = api;
         this.bgm = `https://res.bangdream.ga/assets/sound/` + data.bgmId + '.mp3';
         this.jacket = `https://res.bangdream.ga/assets/musicjacket/` + data.jacketImage + '_jacket.png';
         this.assetBundleName = data.chartAssetBundleName;

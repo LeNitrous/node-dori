@@ -1,6 +1,5 @@
 class Chart {
-    constructor(data, music, difficulty) {
-        this.id = music.id;
+    constructor(data, difficulty) {
         this.difficulty = difficulty;
         this.bpm = data.metadata.bpm;
         this.maxCombo = data.metadata.combo;

@@ -10,7 +10,7 @@ class Live2DCostume {
         this.assetBundleName = data.assetBundleName;
         this.resourceName = data.sdResourceName;
         this.publishedAt = data.publishedAt;
-        this.texture = `https://bangdream.ga/live2d/${data.assetBundleName}_texture_00.png`;
+        this.texture = `${api.resourceUrl}/live2d/${data.assetBundleName}_texture_00.png`;
         this.character = {
             id: data.characterId,
             name: Constants.Characters[data.characterId]

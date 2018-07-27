@@ -48,9 +48,9 @@ function loadData(url) {
     });
 }
 
-function loadCardData(id, region) {
+function loadCardData(id, api) {
     return new Promise((resolve, reject) => 
-        loadData(`https://api.bangdream.ga/v1/${region}/card/${id}`)
+        loadData(`${api.apiUrl}/card/${id}`)
             .then(response => {
                 resolve(new Card(response, region));
             })
@@ -58,11 +58,11 @@ function loadCardData(id, region) {
     );
 }
 
-function loadMusicData(id, region) {
+function loadMusicData(id, api) {
     return new Promise((resolve, reject) => 
-        loadData(`https://api.bangdream.ga/v1/${region}/music/${id}`)
+        loadData(`${api.apiUrl}/music/${id}`)
             .then(response => {
-                resolve(new Music(response, this.region));
+                resolve(new Music(response, this));
             })
             .catch(reject)
     );
@@ -70,7 +70,7 @@ function loadMusicData(id, region) {
 
 function loadChartData(music, diff) {
     return new Promise((resolve, reject) => 
-        loadData(`https://api.bangdream.ga/v1/${music.region}/music/chart/${music.id}/${diff}`)
+        loadData(`${api.apiUrl}/music/chart/${music.id}/${diff}`)
             .then(response => {
                 resolve(new Chart(response, music, diff));
             })
@@ -78,9 +78,9 @@ function loadChartData(music, diff) {
     );
 }
 
-function loadStampData(id, region) {
+function loadStampData(id, api) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/stamp/${id}`)
+        loadData(`${api.apiUrl}/stamp/${id}`)
             .then(response => {
                 resolve(new Stamp(response));
             })
@@ -88,9 +88,9 @@ function loadStampData(id, region) {
     );
 }
 
-function loadCharaData(id, region) {
+function loadCharaData(id) {
     return new Promise((resolve, reject) =>
-        loadData(`https://bandori.party/api/cards/${this.id + 500}`)
+        loadData(`https://bandori.party/api/cards/${id + 500}`)
             .then(response => {
                 resolve(new LocaleCard(response));
             })
@@ -98,9 +98,9 @@ function loadCharaData(id, region) {
     );
 }
 
-function loadBandData(id, region) {
+function loadBandData(id) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/band`)
+        loadData(`${api.apiUrl}/band`)
             .then(response => {
                 var search = { bandId: id };
                 var match = response.filter(o => {
@@ -114,39 +114,39 @@ function loadBandData(id, region) {
     );
 }
 
-function loadCardSkillData(id, region) {
+function loadCardSkillData(id) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/skill/cardId/${id}`)
+        loadData(`${api.apiUrl}/skill/cardId/${id}`)
             .then(response => {
-                resolve(new Skill(response, region));
+                resolve(new Skill(response));
             })
             .catch(reject)
     );
 }
 
-function loadCardScenarioData(name, region) {
+function loadCardScenarioData(name) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/scenario/chara/${name}`)
+        loadData(`${api.apiUrl}/scenario/chara/${name}`)
             .then(response => {
-                resolve(new Scenario(response, region));
+                resolve(new Scenario(response));
             })
             .catch(reject)
     );
 }
 
-function loadLive2DCharacterInfo(id, region) {
+function loadLive2DCharacterInfo(id, api) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/live2d/chara/${id}`)
+        loadData(`${api.apiUrl}/live2d/chara/${id}`)
             .then(response => {
                 var live2d = {
                     actions: [],
                     costumes: []
                 };
                 response.voices.forEach(voice => {
-                    live2d.actions.push(new Live2DAction(voice, region));
+                    live2d.actions.push(new Live2DAction(voice, api));
                 });
                 response.costums.forEach(costume => {
-                    live2d.costumes.push(new Live2DCostume(costume, region));
+                    live2d.costumes.push(new Live2DCostume(costume, api));
                 });
                 resolve(live2d);
             })
@@ -154,9 +154,9 @@ function loadLive2DCharacterInfo(id, region) {
     );    
 }
 
-function loadLive2DModelData(id, region) {
+function loadLive2DModelData(id, api) {
     return new Promise((resolve, reject) =>
-        loadData(`https://api.bangdream.ga/v1/${region}/live2d/model/${id}`)
+        loadData(`${api.apiUrl}/live2d/model/${id}`)
             .then(response => {
                 resolve(response);
             })

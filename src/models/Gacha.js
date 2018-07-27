@@ -1,11 +1,11 @@
 const utils = require('../utils.js');
 
 class Gacha {
-    constructor(data, region) {
+    constructor(data, api) {
         this.id = data.gachaId;
-        this.region = region;
+        this.region = api.region;
         this.name = data.gachaName;
-        this.resName = data.resourceName;
+        this.resourceName = data.resourceName;
         this.sequence = data.seq;
         this.description = data.descripton;
         if (data.annotation)
@@ -13,7 +13,7 @@ class Gacha {
         this.start = data.publishedAt;
         this.end = data.closedAt;
         this.period = data.gachaPeriod;
-        this.image = `https://res.bangdream.ga/assets-${region}/gacha/screen/${data.resourceName}_logo.png`;
+        this.image = `https://res.bangdream.ga/assets-${this.region}/gacha/screen/${data.resourceName}_logo.png`;
         this.details = data.details;
     }
 

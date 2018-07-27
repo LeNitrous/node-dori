@@ -2,11 +2,9 @@ const request = require('superagent');
 const utils = require('./utils.js');
 const Constants = require('./Constants.js');
 
-const Band = require('./models/Band.js');
 const Card = require('./models/Card.js');
-const Gacha = require('./models/Gacha.js');
+const Band = require('./models/Band.js');
 const Music = require('./models/Music.js');
-const Event = require('./models/Event.js');
 const Scenario = require('./models/Scenario.js');
 const Character = require('./models/Character.js');
 
@@ -16,6 +14,7 @@ class BandoriApi {
     constructor(options = {}) {
         this.region = options.region;
         this.apiUrl = `https://api.bangdream.ga/v1/${this.region}`;
+        this.resourceUrl = "https://res.bangream.ga";
         this.constants = Constants;
     }
 
@@ -44,7 +43,7 @@ class BandoriApi {
                 .then(response => {
                     var dataMap = new Map();
                     response.data.forEach(card => {
-                        dataMap.set(card.cardId, new Card(card, this.region));
+                        dataMap.set(card.cardId, new Card(card, this));
                     });
                     resolve(dataMap);
                 })
@@ -57,7 +56,7 @@ class BandoriApi {
             this.query(`/card/${id}`)
                 .then(response => {
                     if (isNaN(id)) reject(new InvalidParameterError());
-                    resolve(new Card(response, this.region));
+                    resolve(new Card(response, this));
                 })
                 .catch(reject)
         );
@@ -69,7 +68,7 @@ class BandoriApi {
                 .then(response => {
                     var songMap = new Map();
                     response.data.forEach(song => {
-                        songMap.set(song.musicId, new Music(song, this.region));
+                        songMap.set(song.musicId, new Music(song, this));
                     });
                     resolve(songMap);
                 })
@@ -82,7 +81,7 @@ class BandoriApi {
             this.query(`/music/${id}`)
                 .then(response => {
                     if (isNaN(id)) reject(new InvalidParameterError());
-                    resolve(new Music(response, this.region));
+                    resolve(new Music(response, this));
                 })
                 .catch(reject)
         );
@@ -92,7 +91,7 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query('/event')
                 .then(response => {
-                    resolve(new Event(response, this.region));
+                    resolve(new Event(response, this));
                 })
                 .catch(reject)
         );
@@ -104,7 +103,7 @@ class BandoriApi {
                 .then(response => {
                     var bandMap = new Map();
                     response.forEach(data => {
-                        bandMap.set(band.bandId, new Band(band));
+                        bandMap.set(band.bandId, new Band(band, this));
                     });
                     resolve(bandMap);
                 })
@@ -122,7 +121,7 @@ class BandoriApi {
                         return o[k] === search[k];
                         });
                     });
-                    resolve(new Band(band));
+                    resolve(new Band(band, this));
                 })
                 .catch(reject)
         )
@@ -132,7 +131,7 @@ class BandoriApi {
         return new Promise((resolve, reject) => 
             this.query(`/chara/${id}`)
                 .then(response => {
-                    resolve(new Character(response));
+                    resolve(new Character(response, this));
                 })
                 .catch(reject)
         )
@@ -154,7 +153,7 @@ class BandoriApi {
                 .then(response => {
                     var gachaMap = new Map();
                     response.data.forEach(gacha => {
-                        gachaMap.set(gacha.gachaId, new Gacha(gacha, this.region));
+                        gachaMap.set(gacha.gachaId, new Gacha(gacha, this));
                     });
                     resolve(gachaMap);
                 })
@@ -166,7 +165,7 @@ class BandoriApi {
         return new Promise((resolve, reject) =>
             this.query(`/gacha`)
                 .then(response => {
-                    var gachas = response.data.map(gacha => new Gacha(gacha, this.region))
+                    var gachas = response.data.map(gacha => new Gacha(gacha, this))
                         .filter(gacha => !gacha.getState());
                     resolve(gachas);
                 })
@@ -177,8 +176,8 @@ class BandoriApi {
     getDatabase() {
         return new Promise((resolve, reject) => {
             if (!this.region)
-                return reject(new Error('Region is not set'));
-            request.get(`https://res.bangdream.ga/static/MasterDB_${region}.json`)
+                reject(new Error('Region is not set'));
+            request.get(`${this.resourceUrl}/static/MasterDB_${this.region}.json`)
                 .set('User-Agent', 'node-dori')
                 .end((error, response) => {
                     if (!error && response.status === 200)

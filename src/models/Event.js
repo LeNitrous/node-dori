@@ -2,12 +2,13 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class GameEvent {
-    constructor(data, region) {  
+    constructor(data, api) {  
         this.id = data.eventId;
-        this.region = region;
+        this.api = api;
+        this.region = api.region;
         this.name = data.eventName;
         this.type = data.eventType;
-        this.image = `https://res.bangdream.ga/assets-${region}/homebanner_banner_event${data.eventId}.png`
+        this.image = `${api.resourceUrl}/assets-${region}/homebanner_banner_event${data.eventId}.png`
         this.enableFlag = data.enableFlag;                              // ?
         this.start = data.startAt;                                      // Event opens to players
         this.end = data.endAt;                                          // Event closes to players
@@ -37,7 +38,7 @@ class GameEvent {
             return reward.rewardType == 'stamp'
         });
         return new Promise((resolve, reject) => 
-            utils.loadStampData(rewardStamp[0].rewardId, this.region)
+            utils.loadStampData(rewardStamp[0].rewardId, this)
                 .then(response => {
                     resolve(response);
                 })
@@ -71,7 +72,7 @@ class GameEvent {
         if (!this.details.musics)
             return music;
         this.details.musics.forEach(o => {
-            music.push(utils.loadMusicData(o.musicId, this.region));
+            music.push(utils.loadMusicData(o.musicId, this));
         });
         return new Promise((resolve, reject) => 
             Promise.all(music)

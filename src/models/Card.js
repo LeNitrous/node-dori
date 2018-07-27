@@ -2,8 +2,9 @@ const utils = require('../utils.js');
 const Constants = require('../Constants.js');
 
 class Card {
-    constructor(data) {
+    constructor(data, api) {
         this.id = data.cardId;
+        this.region = api.region;
         this.title = data.title;
         this.character = {
             id: data.characterId,
@@ -16,13 +17,13 @@ class Card {
         if (data.rarity >= 3)
             this.maxLevelTrained = data.levelLimit + 10;
         this.image = {
-            normal: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_card_normal.png`,
-            normal_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_normal.png`,
-            normal_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_normal.png`,
-            trained: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_card_after_training.png`,
-            trained_trim: `https://res.bangdream.ga/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
-            trained_icon: `https://res.bangdream.ga/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
-            chibi: `https://res.bangdream.ga/assets-jp/characters/livesd/${data.live2dRes}_sdchara.png`
+            normal: `${api.resourceUrl}/assets/characters/resourceset/${data.cardRes}_card_normal.png`,
+            normal_trim: `${api.resourceUrl}/assets/characters/resourceset/${data.cardRes}_trim_normal.png`,
+            normal_icon: `${api.resourceUrl}/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_normal.png`,
+            trained: `${api.resourceUrl}/assets/characters/resourceset/${data.cardRes}_card_after_training.png`,
+            trained_trim: `${api.resourceUrl}/assets/characters/resourceset/${data.cardRes}_trim_after_training.png`,
+            trained_icon: `${api.resourceUrl}/assets/thumb/chara/card${getResBatchID(data.cardId)}_${data.cardRes}_after_training.png`,
+            chibi: `${api.resourceUrl}/assets-jp/characters/livesd/${data.live2dRes}_sdchara.png`
         }
         this.parameterMax = {
             performance: data.maxPerformance,
@@ -54,7 +55,7 @@ class Card {
 
     getCharacter() {
         return new Promise((resolve, reject) => 
-            utils.loadCharaData(this.character.id, this.region)
+            utils.loadCharaData(this.character.id, this)
                 .then(response => {
                     resolve(response);
                 })
@@ -74,7 +75,7 @@ class Card {
 
     getBand() {
         return new Promise((resolve, reject) => 
-            utils.loadBandData(this.band, this.region)
+            utils.loadBandData(this.band, this)
                 .then(response => {
                     resolve(response);
                 })
@@ -84,7 +85,7 @@ class Card {
     
     getSkill() {
         return new Promise((resolve, reject) => 
-            utils.loadCardSkillData(this.id, this.region)
+            utils.loadCardSkillData(this.id, this)
                 .then(response => {
                     resolve(response);
                 })
@@ -94,7 +95,7 @@ class Card {
     
     getDetails() {
         return new Promise((resolve, reject) =>
-            utils.loadCardData(this.id, this.region)
+            utils.loadCardData(this.id, this)
                 .then(response => {
                     resolve({
                         parameters: response.parameters,
@@ -115,7 +116,7 @@ class Card {
         if (match == undefined)
             throw new utils.InvalidParameterError();
         return new Promise((resolve, reject) =>
-            utils.loadCardScenarioData(match.scenario, this.region)
+            utils.loadCardScenarioData(match.scenario, this)
                 .then(response => {
                     resolve(response);
                 })
