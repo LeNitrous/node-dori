@@ -8,7 +8,7 @@ class GameEvent {
         this.region = api.region;
         this.name = data.eventName;
         this.type = data.eventType;
-        this.image = `${api.resourceUrl}/assets-${region}/homebanner_banner_event${data.eventId}.png`
+        this.image = `${api.resourceUrl}/assets-${api.region}/homebanner_banner_event${data.eventId}.png`
         this.enableFlag = data.enableFlag;                              // ?
         this.start = data.startAt;                                      // Event opens to players
         this.end = data.endAt;                                          // Event closes to players
