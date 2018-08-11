@@ -144,12 +144,12 @@ class Bandori {
             return this._query('/event')
                 .then(response => {
                     event = response;
-                    stamp = event.pointRewards.filter(item => item.rewardType === "stamp");
+                    stamp = event.pointRewards.filter(item => item.rewardType === "stamp").shift();
                     return this._query(`/stamp/${stamp.rewardId}`);
                 })
                 .then(response => {
                     event.stamp = response
-                    return this._query(`/event/badge/${event.id}`);
+                    return this._query(`/event/badge/${event.eventId}`);
                 })
                 .then(response => {
                     event.badge = response;
