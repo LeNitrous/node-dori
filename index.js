@@ -140,7 +140,7 @@ class Bandori {
      */
     getEvent() {
         return new Promise((resolve, reject) => {
-            var event;
+            var event, stamp;
             return this._query('/event')
                 .then(response => {
                     event = response;
